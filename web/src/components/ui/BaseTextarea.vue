@@ -10,7 +10,7 @@ const model = defineModel<string>()
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <label v-if="label" class="text-sm text-gray-700 font-medium dark:text-gray-300">
+    <label v-if="label" class="text-sm text-[var(--text-secondary)] font-medium">
       {{ label }}
     </label>
     <textarea
@@ -18,7 +18,7 @@ const model = defineModel<string>()
       :rows="rows || 3"
       :placeholder="placeholder"
       :disabled="disabled"
-      class="w-full border border-gray-200 rounded-lg bg-white px-3 py-2 outline-none transition-all duration-200 dark:border-gray-700 focus:border-green-500 dark:bg-gray-800 disabled:bg-gray-50 dark:text-white disabled:text-gray-400 focus:ring-2 focus:ring-green-500/20 dark:focus:border-green-500 dark:disabled:bg-gray-800/50"
+      class="w-full border border-[var(--border-default)] rounded-lg bg-[var(--surface-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none transition-all duration-200 disabled:cursor-not-allowed focus:border-[var(--accent)] disabled:bg-[var(--surface-app)] disabled:text-[var(--text-disabled)] placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent)]/20"
     />
   </div>
 </template>

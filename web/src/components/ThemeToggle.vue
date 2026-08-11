@@ -32,30 +32,28 @@ function selectTheme(theme: Theme) {
 
       <div
         v-if="appStore.showThemePanel"
-        class="fixed z-[100] w-80 rounded-xl bg-white p-4 shadow-xl dark:bg-gray-800"
+        class="fixed z-[100] w-80 border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] p-4 shadow-lg"
         :style="{
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }"
       >
-        <h3 class="mb-3 text-sm text-gray-700 font-semibold dark:text-gray-200">
+        <h3 class="mb-3 text-sm text-[var(--text-primary)] font-semibold tracking-tight">
           选择主题
         </h3>
         <div class="grid grid-cols-2 gap-2">
           <button
             v-for="(t, theme) in appStore.themes"
             :key="theme"
-            class="relative flex flex-col items-center justify-center gap-2 rounded-lg p-3 transition-all hover:scale-105"
+            class="relative flex flex-col items-center justify-center gap-2 rounded-lg p-3 transition-all duration-200 hover:scale-105"
             :class="{
               'ring-2 ring-offset-2': appStore.currentTheme === theme,
-              'ring-blue-500': appStore.currentTheme === theme,
-              'dark:ring-offset-gray-800': t.isDark,
             }"
             :style="{
-              'background': t.gradient,
-              '--tw-ring-color': t.primary,
-              '--tw-ring-offset-color': t.isDark ? '#1f2937' : '#ffffff',
+              'background': `linear-gradient(135deg, ${t.accent} 0%, ${t.accentHover} 100%)`,
+              '--tw-ring-color': t.accent,
+              '--tw-ring-offset-color': t.isDark ? '#18181b' : '#ffffff',
             }"
             :title="t.name"
             @click="selectTheme(theme as Theme)"
@@ -69,9 +67,9 @@ function selectTheme(theme: Theme) {
           </button>
         </div>
 
-        <div class="mt-3 border-t border-gray-100 pt-3 text-center dark:border-gray-700">
+        <div class="mt-3 border-t border-[var(--border-subtle)] pt-3 text-center">
           <button
-            class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+            class="text-sm text-[var(--text-muted)] transition-colors duration-150 hover:text-[var(--text-primary)]"
             @click="appStore.toggleThemePanel()"
           >
             关闭

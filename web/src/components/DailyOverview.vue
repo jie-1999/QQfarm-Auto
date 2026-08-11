@@ -73,21 +73,21 @@ function formatGiftProgress(gift: any) {
 <template>
   <div class="flex flex-col gap-4">
     <!-- Daily Gifts Grid -->
-    <div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-      <h3 class="mb-3 flex items-center gap-2 font-medium">
-        <div class="i-carbon-gift text-pink-500" />
+    <div class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
+      <h3 class="mb-3 flex items-center gap-2 text-sm text-[var(--text-primary)] font-semibold tracking-tight">
+        <div class="i-carbon-gift text-[var(--accent)]" />
         <span>每日礼包 & 任务</span>
       </h3>
 
       <div
         v-if="!hasDailyData"
-        class="rounded-lg bg-gray-50 p-6 text-center text-sm text-gray-500 dark:bg-gray-900/40 dark:text-gray-400"
+        class="rounded-lg bg-[var(--surface-app)] p-6 text-center text-sm text-[var(--text-muted)]"
       >
         请登录账号后查看
       </div>
       <div
         v-else-if="!gifts.length"
-        class="rounded-lg bg-gray-50 p-6 text-center text-sm text-gray-500 dark:bg-gray-900/40 dark:text-gray-400"
+        class="rounded-lg bg-[var(--surface-app)] p-6 text-center text-sm text-[var(--text-muted)]"
       >
         暂无每日礼包与任务数据
       </div>
@@ -95,19 +95,19 @@ function formatGiftProgress(gift: any) {
         <div
           v-for="gift in gifts"
           :key="gift.key"
-          class="flex flex-col justify-between border border-gray-100 rounded-lg p-3 dark:border-gray-700 2xl:p-4"
+          class="flex flex-col justify-between border border-[var(--border-subtle)] rounded-lg p-3 2xl:p-4"
         >
           <div class="mb-2 flex items-center gap-2">
             <div
               class="h-7 w-7 flex flex-shrink-0 items-center justify-center rounded-md 2xl:h-8 2xl:w-8"
-              :class="gift.doneToday ? 'bg-green-100 dark:bg-green-900/30' : (gift.enabled ? 'bg-blue-100 dark:bg-blue-900/30' : 'bg-gray-100 dark:bg-gray-700')"
+              :class="gift.doneToday ? 'bg-[var(--status-success)]/10' : (gift.enabled ? 'bg-[var(--accent-muted)]' : 'bg-[var(--surface-hover)]')"
             >
               <div
                 class="text-base 2xl:text-lg"
-                :class="[getGiftIcon(gift.key), gift.doneToday ? 'text-green-500' : (gift.enabled ? 'text-blue-500' : 'text-gray-400')]"
+                :class="[getGiftIcon(gift.key), gift.doneToday ? 'text-[var(--status-success)]' : (gift.enabled ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]')]"
               />
             </div>
-            <span class="text-sm text-gray-700 font-medium leading-tight 2xl:text-base dark:text-gray-300">
+            <span class="text-sm text-[var(--text-secondary)] font-medium leading-tight 2xl:text-base">
               {{ gift.label }}
             </span>
           </div>
@@ -115,18 +115,18 @@ function formatGiftProgress(gift: any) {
           <div class="flex items-end justify-between">
             <span
               class="text-xs 2xl:text-sm"
-              :class="gift.doneToday ? 'text-green-500' : (gift.enabled ? 'text-blue-500' : 'text-gray-400')"
+              :class="gift.doneToday ? 'text-[var(--status-success)]' : (gift.enabled ? 'text-[var(--accent)]' : 'text-[var(--text-muted)]')"
             >
               {{ getGiftStatusText(gift) }}
             </span>
 
             <div class="flex flex-col items-end">
-              <span v-if="formatGiftProgress(gift)" class="text-xs text-gray-500 font-bold 2xl:text-sm">
+              <span v-if="formatGiftProgress(gift)" class="text-xs text-[var(--text-muted)] font-bold font-mono 2xl:text-sm">
                 {{ formatGiftProgress(gift) }}
               </span>
               <span
                 v-if="formatGiftSubText(gift)"
-                class="mt-0.5 text-[10px] text-gray-400 2xl:text-xs"
+                class="mt-0.5 text-[10px] text-[var(--text-muted)] 2xl:text-xs"
               >
                 {{ formatGiftSubText(gift) }}
               </span>

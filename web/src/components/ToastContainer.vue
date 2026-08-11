@@ -7,27 +7,19 @@ const { toasts } = storeToRefs(toastStore)
 
 function getIcon(type: string) {
   switch (type) {
-    case 'success': return 'i-carbon-checkmark-filled text-green-500'
-    case 'error': return 'i-carbon-error-filled text-red-500'
-    case 'warning': return 'i-carbon-warning-filled text-yellow-500'
-    case 'info': return 'i-carbon-information-filled text-blue-500'
-    default: return 'i-carbon-information-filled text-blue-500'
+    case 'success': return 'i-carbon-checkmark-filled'
+    case 'error': return 'i-carbon-error-filled'
+    case 'warning': return 'i-carbon-warning-filled'
+    default: return 'i-carbon-information-filled'
   }
 }
 
-function getBgColor(_type: string) {
-  // Tailwind colors with some transparency?
-  // Actually, standard white/dark background with colored border/icon is usually cleaner.
-  return 'bg-white dark:bg-gray-800 border-l-4'
-}
-
-function getBorderColor(type: string) {
+function getColor(type: string) {
   switch (type) {
-    case 'success': return 'border-green-500'
-    case 'error': return 'border-red-500'
-    case 'warning': return 'border-yellow-500'
-    case 'info': return 'border-blue-500'
-    default: return 'border-gray-500'
+    case 'success': return 'text-[var(--status-success)]'
+    case 'error': return 'text-[var(--status-error)]'
+    case 'warning': return 'text-[var(--status-warning)]'
+    default: return 'text-[var(--status-info)]'
   }
 }
 </script>
@@ -38,18 +30,17 @@ function getBorderColor(type: string) {
       <div
         v-for="toast in toasts"
         :key="toast.id"
-        class="w-80 flex items-start gap-3 rounded p-4 shadow-lg transition-all duration-300"
-        :class="[getBgColor(toast.type), getBorderColor(toast.type)]"
+        class="w-80 flex items-start gap-3 border border-[var(--border-default)] rounded-lg bg-[var(--surface-elevated)] p-3.5 shadow-lg"
       >
-        <div :class="getIcon(toast.type)" class="mt-0.5 shrink-0 text-xl" />
-        <div class="flex-1 break-words text-sm text-gray-700 dark:text-gray-200">
+        <div :class="[getIcon(toast.type), getColor(toast.type)]" class="mt-0.5 shrink-0 text-lg" />
+        <div class="flex-1 break-words text-sm text-[var(--text-secondary)]">
           {{ toast.message }}
         </div>
         <button
-          class="shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          class="shrink-0 text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
           @click="toastStore.remove(toast.id)"
         >
-          <div class="i-carbon-close text-lg" />
+          <div class="i-carbon-close" />
         </button>
       </div>
     </TransitionGroup>
@@ -57,18 +48,18 @@ function getBorderColor(type: string) {
 </template>
 
 <style scoped>
-.toast-enter-active,
-.toast-leave-active {
-  transition: all 0.3s ease;
+.toast-enter-active {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
+.toast-leave-active {
+  transition: all 0.2s ease-in;
+}
 .toast-enter-from {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(20px);
 }
-
 .toast-leave-to {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(20px);
 }
 </style>

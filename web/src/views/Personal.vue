@@ -8,46 +8,46 @@ const currentTab = ref<'farm' | 'bag' | 'task'>('farm')
 </script>
 
 <template>
-  <div class="h-full flex flex-col p-4">
-    <div class="mb-4 flex space-x-2">
+  <div class="mx-auto h-full max-w-7xl flex flex-col p-4 md:p-6">
+    <div class="mb-5">
+      <h1 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
+        个人中心
+      </h1>
+      <p class="mt-1 text-sm text-[var(--text-muted)]">
+        管理你的农场、背包与任务
+      </p>
+    </div>
+
+    <div class="mb-5 inline-flex gap-1 border border-[var(--border-subtle)] rounded-lg bg-[var(--surface-card)] p-1">
       <button
-        class="rounded-lg px-4 py-2 font-medium transition-colors"
+        class="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150"
         :class="currentTab === 'farm'
-          ? 'text-white shadow-md'
-          : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-        :style="currentTab === 'farm' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+          ? 'bg-[var(--accent)] text-white shadow-sm'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'"
         @click="currentTab = 'farm'"
       >
-        <div class="flex items-center space-x-2">
-          <div class="i-carbon-sprout text-lg" />
-          <span>我的农场</span>
-        </div>
+        <div class="i-carbon-sprout text-base" />
+        <span>我的农场</span>
       </button>
       <button
-        class="rounded-lg px-4 py-2 font-medium transition-colors"
+        class="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150"
         :class="currentTab === 'bag'
-          ? 'text-white shadow-md'
-          : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-        :style="currentTab === 'bag' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+          ? 'bg-[var(--accent)] text-white shadow-sm'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'"
         @click="currentTab = 'bag'"
       >
-        <div class="flex items-center space-x-2">
-          <div class="i-carbon-box text-lg" />
-          <span>我的背包</span>
-        </div>
+        <div class="i-carbon-box text-base" />
+        <span>我的背包</span>
       </button>
       <button
-        class="rounded-lg px-4 py-2 font-medium transition-colors"
+        class="flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150"
         :class="currentTab === 'task'
-          ? 'text-white shadow-md'
-          : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-        :style="currentTab === 'task' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+          ? 'bg-[var(--accent)] text-white shadow-sm'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'"
         @click="currentTab = 'task'"
       >
-        <div class="flex items-center space-x-2">
-          <div class="i-carbon-task text-lg" />
-          <span>我的任务</span>
-        </div>
+        <div class="i-carbon-task text-base" />
+        <span>我的任务</span>
       </button>
     </div>
 

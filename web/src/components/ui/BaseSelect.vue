@@ -51,22 +51,22 @@ onUnmounted(() => {
 
 <template>
   <div ref="containerRef" class="flex flex-col gap-1.5">
-    <label v-if="label" class="text-sm text-gray-700 font-medium dark:text-gray-300">
+    <label v-if="label" class="text-sm text-[var(--text-secondary)] font-medium">
       {{ label }}
     </label>
     <div class="relative">
       <!-- Trigger -->
       <div
-        class="w-full flex cursor-pointer items-center justify-between border border-gray-200 rounded-lg bg-white px-3 py-2 outline-none transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        class="w-full flex cursor-pointer items-center justify-between border border-[var(--border-default)] rounded-lg bg-[var(--surface-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none transition-all duration-200"
         :class="{
-          'bg-gray-50 text-gray-400 cursor-not-allowed dark:bg-gray-800/50': disabled,
-          'ring-2 ring-green-500/20 border-green-500 dark:focus:border-green-500': isOpen,
-          'focus:border-green-500 focus:ring-2 focus:ring-green-500/20': !disabled,
+          'cursor-not-allowed bg-[var(--surface-app)] text-[var(--text-disabled)]': disabled,
+          'border-[var(--accent)] ring-2 ring-[var(--accent)]/20': isOpen,
+          'focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20': !disabled && !isOpen,
         }"
         @click="toggleDropdown"
       >
         <span class="truncate">{{ selectedLabel }}</span>
-        <div class="i-carbon-chevron-down text-lg text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': isOpen }" />
+        <div class="i-carbon-chevron-down text-lg text-[var(--text-muted)] transition-transform duration-200" :class="{ 'rotate-180': isOpen }" />
       </div>
 
       <!-- Dropdown Menu -->
@@ -80,17 +80,17 @@ onUnmounted(() => {
       >
         <div
           v-if="isOpen"
-          class="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-auto border border-gray-200 rounded-lg bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
+          class="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-auto border border-[var(--border-default)] rounded-lg bg-[var(--surface-elevated)] py-1 shadow-lg"
         >
           <template v-if="options?.length">
             <div
               v-for="opt in options"
               :key="opt.value"
-              class="cursor-pointer px-3 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-700/50"
+              class="cursor-pointer px-3 py-2 text-sm transition-colors duration-150 hover:bg-[var(--surface-hover)]"
               :class="{
-                'bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400': model === opt.value,
-                'text-gray-400 cursor-not-allowed hover:bg-transparent dark:text-gray-500': opt.disabled,
-                'text-gray-700 dark:text-gray-200': model !== opt.value && !opt.disabled,
+                'bg-[var(--accent-muted)] text-[var(--accent)]': model === opt.value,
+                'cursor-not-allowed text-[var(--text-disabled)] hover:bg-transparent': opt.disabled,
+                'text-[var(--text-secondary)]': model !== opt.value && !opt.disabled,
               }"
               @click="!opt.disabled && selectOption(opt.value)"
             >
@@ -99,7 +99,7 @@ onUnmounted(() => {
               </slot>
             </div>
           </template>
-          <div v-else class="px-3 py-2 text-center text-sm text-gray-400">
+          <div v-else class="px-3 py-2 text-center text-sm text-[var(--text-muted)]">
             暂无选项
           </div>
         </div>

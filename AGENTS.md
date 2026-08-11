@@ -98,6 +98,10 @@ docker compose -f docker-compose.yml up -d --build
 - `core/client.js` 启动 admin 服务器并管理 worker 进程
 - `core/src/controllers/admin.js` 是 Express + Socket.IO 的 HTTP 服务器
 
+## 页面开发规则
+
+- **写页面前必须参考 Skills**：修改或新增前端页面时，须先读取 `~/.config/opencode/skills/` 下对应 skill 的 SKILL.md（`design-taste-frontend`、`redesign-existing-projects`、`frontend-design`），遵循其设计规范与 Pre-Flight Check，确保页面质量达标后再输出代码。
+
 ## 代码约定
 
 - **后端**: CommonJS（`require`/`module.exports`），无 `"type": "module"`

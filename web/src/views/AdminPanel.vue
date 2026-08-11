@@ -2,10 +2,10 @@
 import type { Card, UserCard } from '@/stores/user'
 import { computed, onMounted, ref, watch } from 'vue'
 import api from '@/api'
+import ConfirmModal from '@/components/ConfirmModal.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseSwitch from '@/components/ui/BaseSwitch.vue'
-import ConfirmModal from '@/components/ConfirmModal.vue'
 import { useToastStore } from '@/stores/toast'
 import { useUserStore } from '@/stores/user'
 
@@ -13,7 +13,7 @@ const userStore = useUserStore()
 const toast = useToastStore()
 
 const activeTab = ref<'card' | 'user' | 'log' | 'system'>(
-  (localStorage.getItem('admin-active-tab') as 'card' | 'user' | 'log' | 'system') || 'card'
+  (localStorage.getItem('admin-active-tab') as 'card' | 'user' | 'log' | 'system') || 'card',
 )
 
 watch(activeTab, (newTab) => {
@@ -142,7 +142,8 @@ async function fetchCardClaimStatus() {
 }
 
 async function toggleCardClaimStatus(enabled: boolean | undefined) {
-  if (enabled === undefined) return
+  if (enabled === undefined)
+    return
   cardClaimLoading.value = true
   try {
     const res = await api.post('/api/admin/card-claim/status', { enabled })
@@ -287,8 +288,9 @@ async function copyCode(code: string) {
 
 async function copySelectedCards() {
   const codes = Array.from(selectedCards.value)
-  if (codes.length === 0) return
-  
+  if (codes.length === 0)
+    return
+
   try {
     const text = codes.join('\n')
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -625,24 +627,26 @@ function getEventLabel(event: string): string {
 }
 
 function getEventClass(event: string): string {
-  return event === 'login_success' 
-    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' 
-    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  return event === 'login_success'
+    ? 'bg-[var(--status-success)]/10 text-[var(--status-success)]'
+    : 'bg-[var(--status-error)]/10 text-[var(--status-error)]'
 }
 
 function getErrorTypeLabel(errorType: string | null): string {
-  if (!errorType) return '-'
+  if (!errorType)
+    return '-'
   const labels: Record<string, string> = {
-    'rate_limit': '速率限制',
-    'locked': '账户锁定',
-    'invalid_credentials': '凭证错误',
+    rate_limit: '速率限制',
+    locked: '账户锁定',
+    invalid_credentials: '凭证错误',
   }
   return labels[errorType] || errorType
 }
 
 function parseBrowser(userAgent: string): string {
-  if (!userAgent || userAgent === 'unknown') return '未知'
-  
+  if (!userAgent || userAgent === 'unknown')
+    return '未知'
+
   if (userAgent.includes('Edg/')) {
     const match = userAgent.match(/Edg\/([\d.]+)/)
     return `Edge ${match ? match[1] : ''}`
@@ -662,7 +666,7 @@ function parseBrowser(userAgent: string): string {
   if (userAgent.includes('MSIE') || userAgent.includes('Trident/')) {
     return 'IE'
   }
-  
+
   return '其他'
 }
 
@@ -821,25 +825,24 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="admin-panel">
-    <div class="mb-4">
-      <h1 class="flex items-center gap-2 text-2xl text-gray-900 font-bold dark:text-gray-100">
-        <div class="i-fas-user-shield text-lg" />
+  <div class="admin-panel mx-auto max-w-7xl p-4 md:p-6">
+    <div class="mb-6">
+      <h1 class="flex items-center gap-2 text-lg text-[var(--text-primary)] font-semibold tracking-tight">
+        <div class="i-fas-user-shield" />
         后台管理
       </h1>
     </div>
 
-    <div class="border border-gray-200 rounded-lg bg-white shadow dark:border-gray-700 dark:bg-gray-800">
-      <div class="border-b border-gray-200 dark:border-gray-700">
+    <div class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)]">
+      <div class="border-b border-[var(--border-subtle)]">
         <nav class="flex gap-1 p-2">
           <button
             v-for="tab in tabs"
             :key="tab.key"
-            class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all"
+            class="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200"
             :class="activeTab === tab.key
-              ? 'text-white shadow-sm'
-              : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'"
-            :style="activeTab === tab.key ? { backgroundColor: 'var(--theme-primary)' } : {}"
+              ? 'bg-[var(--accent)] text-white shadow-sm'
+              : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'"
             @click="activeTab = tab.key"
           >
             <div :class="tab.icon" />
@@ -848,11 +851,11 @@ onMounted(() => {
         </nav>
       </div>
 
-      <div class="p-4">
+      <div class="p-4 md:p-6">
         <!-- 卡密管理 -->
         <div v-if="activeTab === 'card'" class="space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="text-lg text-gray-800 font-semibold dark:text-gray-200">
+            <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
               卡密管理
             </h3>
             <div class="flex gap-2">
@@ -866,18 +869,18 @@ onMounted(() => {
           </div>
 
           <!-- 卡密领取功能开关 -->
-          <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+          <div class="flex items-center justify-between border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-4">
             <div>
-              <h4 class="text-sm text-gray-900 font-medium dark:text-white">
+              <h4 class="text-sm text-[var(--text-primary)] font-medium">
                 卡密领取功能
               </h4>
-              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              <p class="mt-1 text-xs text-[var(--text-muted)]">
                 开启后，用户注册时可免费领取一张时间卡密
               </p>
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-xs text-gray-500">
-                库存: <span class="font-medium" :class="unusedTimeCardsCount > 0 ? 'text-green-600' : 'text-red-600'">{{ unusedTimeCardsCount }}</span> 张
+              <span class="text-xs text-[var(--text-muted)]">
+                库存: <span class="font-medium font-mono" :class="unusedTimeCardsCount > 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-error)]'">{{ unusedTimeCardsCount }}</span> 张
               </span>
               <BaseSwitch
                 v-model="cardClaimEnabled"
@@ -887,48 +890,47 @@ onMounted(() => {
             </div>
           </div>
 
+          <!-- 类型筛选 -->
           <div class="flex gap-2">
             <button
-              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150"
               :class="cardTypeFilter === 'all'
-                ? 'text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-              :style="cardTypeFilter === 'all' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
               @click="cardTypeFilter = 'all'"
             >
               全部
             </button>
             <button
-              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150"
               :class="cardTypeFilter === 'time'
-                ? 'text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-              :style="cardTypeFilter === 'time' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
               @click="cardTypeFilter = 'time'"
             >
               时间卡密
             </button>
             <button
-              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+              class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors duration-150"
               :class="cardTypeFilter === 'quota'
-                ? 'text-white'
-                : 'bg-white text-gray-600 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'"
-              :style="cardTypeFilter === 'quota' ? { backgroundColor: 'var(--theme-primary)' } : {}"
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
               @click="cardTypeFilter = 'quota'"
             >
               配额卡密
             </button>
           </div>
 
-          <div class="flex items-center gap-2 rounded-lg bg-white px-2 py-1.5 shadow dark:bg-gray-800">
+          <!-- 搜索和状态筛选 -->
+          <div class="flex items-center gap-2">
             <input
               v-model="searchQuery"
               placeholder="搜索卡密、描述或使用者..."
-              class="h-8 w-64 border border-gray-300 rounded-lg bg-white px-3 text-sm text-gray-900 outline-none transition-all dark:border-gray-600 focus:border-green-500 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-green-500/20"
+              class="h-8 w-64 border border-[var(--border-default)] rounded-lg bg-[var(--surface-app)] px-3 text-sm text-[var(--text-primary)] outline-none transition-all duration-200 focus:border-[var(--accent)] placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-[var(--accent)]/20"
             >
             <select
               v-model="filterStatus"
-              class="h-8 border border-gray-300 rounded-lg bg-white px-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              class="h-8 border border-[var(--border-default)] rounded-lg bg-[var(--surface-app)] px-2 text-sm text-[var(--text-primary)]"
             >
               <option value="all">
                 全部状态
@@ -948,8 +950,9 @@ onMounted(() => {
             </select>
           </div>
 
-          <div v-if="selectedCards.size > 0" class="flex items-center gap-3 rounded-lg p-3" style="background-color: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.1);">
-            <span style="color: var(--theme-primary);">
+          <!-- 批量操作栏 -->
+          <div v-if="selectedCards.size > 0" class="flex items-center gap-3 border border-[var(--accent-border)] rounded-lg bg-[var(--accent-muted)] p-3">
+            <span class="text-sm text-[var(--accent)]">
               已选择 {{ selectedCards.size }} 个卡密
             </span>
             <BaseButton variant="secondary" size="sm" @click="copySelectedCards">
@@ -958,119 +961,127 @@ onMounted(() => {
             <BaseButton variant="danger" size="sm" @click="deleteSelectedCards">
               批量删除
             </BaseButton>
-            <button
-              class="ml-auto text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700"
+            <BaseButton
+              class="ml-auto"
+              variant="ghost"
+              size="sm"
               @click="selectedCards.clear(); selectAll = false"
             >
               清除选择
-            </button>
+            </BaseButton>
           </div>
 
-          <div v-if="cardsLoading" class="py-8 text-center text-gray-500">
+          <!-- 加载中 -->
+          <div v-if="cardsLoading" class="py-8 text-center text-[var(--text-muted)]">
             <div i-svg-spinners-90-ring-with-bg class="mb-2 inline-block text-2xl" />
             <div>加载中...</div>
           </div>
 
-          <div v-else class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+          <!-- 卡密表格 -->
+          <div v-else class="overflow-hidden border border-[var(--border-subtle)] rounded-xl">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
+              <table class="min-w-full">
+                <thead class="bg-[var(--surface-hover)] text-xs text-[var(--text-muted)] tracking-wider uppercase">
                   <tr>
                     <th class="px-3 py-2 text-left">
                       <input
                         v-model="selectAll"
                         type="checkbox"
-                        class="border-gray-300 rounded"
+                        class="border-[var(--border-default)] rounded"
                         @change="toggleSelectAll"
                       >
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       卡密
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       描述
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       类型
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       数值
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       状态
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       使用者
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       生成时间
                     </th>
-                    <th class="px-4 py-2 text-left text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-left font-medium">
                       使用时间
                     </th>
-                    <th class="px-4 py-2 text-right text-xs text-gray-500 font-medium dark:text-gray-300">
+                    <th class="px-4 py-2 text-right font-medium">
                       操作
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                  <tr v-for="card in filteredCards" :key="card.code" class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                <tbody>
+                  <tr
+                    v-for="card in filteredCards"
+                    :key="card.code"
+                    class="border-b border-[var(--border-subtle)] transition-colors duration-150 hover:bg-[var(--surface-hover)]"
+                  >
                     <td class="px-3 py-2">
                       <input
                         :checked="selectedCards.has(card.code)"
                         type="checkbox"
-                        class="border-gray-300 rounded"
+                        class="border-[var(--border-default)] rounded"
                         @change="toggleSelectCard(card.code)"
                       >
                     </td>
                     <td class="whitespace-nowrap px-4 py-2">
-                      <code class="rounded bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-700">{{ card.code }}</code>
+                      <code class="rounded bg-[var(--surface-hover)] px-2 py-0.5 text-xs text-[var(--text-secondary)] font-mono">{{ card.code }}</code>
                     </td>
-                    <td class="whitespace-nowrap px-4 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-4 py-2 text-sm text-[var(--text-primary)]">
                       {{ card.description }}
                     </td>
                     <td class="whitespace-nowrap px-4 py-2">
                       <span
-                        class="inline-flex rounded-full px-2 py-0.5 text-xs"
-                        :class="card.type === 'quota' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        :class="card.type === 'quota' ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-[var(--status-info)]/10 text-[var(--status-info)]'"
                       >
                         {{ getCardTypeLabel(card) }}
                       </span>
                     </td>
-                    <td class="whitespace-nowrap px-4 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-4 py-2 text-sm text-[var(--text-primary)] font-mono">
                       {{ getCardValueLabel(card) }}
                     </td>
                     <td class="whitespace-nowrap px-4 py-2">
                       <span
-                        class="inline-flex rounded-full px-2 py-0.5 text-xs"
-                        :class="card.enabled ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        :class="card.enabled ? 'bg-[var(--status-success)]/10 text-[var(--status-success)]' : 'bg-[var(--status-error)]/10 text-[var(--status-error)]'"
                       >
                         {{ card.enabled ? '启用' : '禁用' }}
                       </span>
                     </td>
-                    <td class="whitespace-nowrap px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                    <td class="whitespace-nowrap px-4 py-2 text-sm text-[var(--text-muted)]">
                       {{ card.usedBy || '-' }}
                     </td>
-                    <td class="whitespace-nowrap px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                    <td class="whitespace-nowrap px-4 py-2 text-sm text-[var(--text-muted)]">
                       {{ card.createdAt ? new Date(card.createdAt).toLocaleString() : '-' }}
                     </td>
-                    <td class="whitespace-nowrap px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                    <td class="whitespace-nowrap px-4 py-2 text-sm text-[var(--text-muted)]">
                       {{ card.usedAt ? new Date(card.usedAt).toLocaleString() : '-' }}
                     </td>
                     <td class="whitespace-nowrap px-4 py-2 text-right text-sm">
-                      <button class="mr-2 hover:opacity-80" style="color: var(--theme-primary);" @click="copyCode(card.code)">
+                      <button class="mr-2 text-[var(--accent)] transition-opacity hover:opacity-80" @click="copyCode(card.code)">
                         复制
                       </button>
-                      <button class="mr-2 hover:opacity-80" style="color: var(--theme-primary);" @click="toggleCardStatus(card)">
+                      <button class="mr-2 text-[var(--accent)] transition-opacity hover:opacity-80" @click="toggleCardStatus(card)">
                         {{ card.enabled ? '禁用' : '启用' }}
                       </button>
-                      <button class="text-red-600 dark:text-red-400 hover:text-red-900" @click="deleteCard(card)">
+                      <button class="text-[var(--status-error)] transition-opacity hover:opacity-80" @click="deleteCard(card)">
                         删除
                       </button>
                     </td>
                   </tr>
                   <tr v-if="filteredCards.length === 0">
-                    <td colspan="10" class="px-4 py-4 text-center text-gray-500 dark:text-gray-400">
+                    <td colspan="10" class="px-4 py-4 text-center text-[var(--text-muted)]">
                       暂无卡密
                     </td>
                   </tr>
@@ -1079,27 +1090,28 @@ onMounted(() => {
             </div>
           </div>
 
+          <!-- 创建卡密弹窗 -->
           <div
             v-if="showCreateModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showCreateModal = false"
           >
-            <div class="max-w-md w-full rounded-lg bg-white p-5 dark:bg-gray-800" @click.stop>
-              <h2 class="mb-4 text-lg text-gray-900 font-bold dark:text-white">
+            <div class="max-w-md w-full border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] p-5 shadow-xl" @click.stop>
+              <h2 class="mb-4 text-lg text-[var(--text-primary)] font-semibold tracking-tight">
                 创建卡密
               </h2>
               <div class="space-y-3">
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     描述
                   </label>
                   <BaseInput
                     v-model="newCard.description"
-                    placeholder="例如：月卡-2024"
+                    placeholder="例如: 月卡-2024"
                   />
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     卡密类型
                   </label>
                   <div class="flex gap-4">
@@ -1108,23 +1120,23 @@ onMounted(() => {
                         v-model="newCard.type"
                         type="radio"
                         value="time"
-                        class="text-blue-600 focus:ring-blue-500"
+                        class="text-[var(--accent)] focus:ring-[var(--accent)]"
                       >
-                      <span class="text-sm text-gray-700 dark:text-gray-300">时间卡（增加使用时长）</span>
+                      <span class="text-sm text-[var(--text-secondary)]">时间卡（增加使用时长）</span>
                     </label>
                     <label class="flex cursor-pointer items-center gap-2">
                       <input
                         v-model="newCard.type"
                         type="radio"
                         value="quota"
-                        class="text-orange-600 focus:ring-orange-500"
+                        class="text-[var(--accent)] focus:ring-[var(--accent)]"
                       >
-                      <span class="text-sm text-gray-700 dark:text-gray-300">额度卡（增加账号额度）</span>
+                      <span class="text-sm text-[var(--text-secondary)]">额度卡（增加账号额度）</span>
                     </label>
                   </div>
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     {{ newCard.type === 'quota' ? '额度数量' : '天数' }}
                   </label>
                   <BaseInput
@@ -1132,15 +1144,15 @@ onMounted(() => {
                     type="number"
                     :placeholder="newCard.type === 'quota' ? '可添加的账号数量' : '天数'"
                   />
-                  <p v-if="newCard.type === 'time'" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p v-if="newCard.type === 'time'" class="mt-1 text-xs text-[var(--text-muted)]">
                     输入-1表示永久，其他数字表示天数
                   </p>
-                  <p v-else class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p v-else class="mt-1 text-xs text-[var(--text-muted)]">
                     用户使用后可增加的账号额度数量
                   </p>
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     数量
                   </label>
                   <BaseInput
@@ -1150,12 +1162,12 @@ onMounted(() => {
                     max="100"
                     placeholder="数量"
                   />
-                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p class="mt-1 text-xs text-[var(--text-muted)]">
                     批量创建数量（1-100），批量创建后会自动导出文件
                   </p>
                 </div>
               </div>
-              <div class="mt-5 flex justify-end space-x-3">
+              <div class="mt-5 flex justify-end gap-2">
                 <BaseButton variant="secondary" size="sm" @click="showCreateModal = false">
                   取消
                 </BaseButton>
@@ -1170,7 +1182,7 @@ onMounted(() => {
         <!-- 用户管理 -->
         <div v-else-if="activeTab === 'user'" class="space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="text-lg text-gray-900 font-bold dark:text-gray-100">
+            <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
               用户管理
             </h3>
             <BaseButton variant="primary" size="sm" @click="fetchUsers">
@@ -1178,93 +1190,104 @@ onMounted(() => {
             </BaseButton>
           </div>
 
-          <div v-if="usersLoading" class="py-8 text-center text-gray-500">
+          <div v-if="usersLoading" class="py-8 text-center text-[var(--text-muted)]">
             <div i-svg-spinners-90-ring-with-bg class="mb-2 inline-block text-2xl" />
             <div>加载中...</div>
           </div>
 
-          <div v-else class="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
+          <div v-else class="overflow-hidden border border-[var(--border-subtle)] rounded-xl">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
+              <table class="min-w-full">
+                <thead class="bg-[var(--surface-hover)] text-xs text-[var(--text-muted)] tracking-wider uppercase">
                   <tr>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       用户名
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       角色
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       额度
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       时长
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       过期时间
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       状态
                     </th>
-                    <th class="px-3 py-2 text-right text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-right font-medium">
                       操作
                     </th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
-                  <tr v-for="user in users" :key="user.username">
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 font-medium dark:text-white">
+                <tbody>
+                  <tr
+                    v-for="user in users"
+                    :key="user.username"
+                    class="border-b border-[var(--border-subtle)] transition-colors duration-150 hover:bg-[var(--surface-hover)]"
+                  >
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)] font-medium">
                       {{ user.username }}
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-3 py-2">
                       <span
-                        class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
-                        :class="user.role === 'admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        :class="user.role === 'admin' ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-[var(--surface-hover)] text-[var(--text-secondary)]'"
                       >
                         {{ user.role === 'admin' ? '管理员' : '用户' }}
                       </span>
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)]">
                       <span
-                        class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
-                        :class="user.role === 'admin' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        :class="user.role === 'admin' ? 'bg-[var(--accent)]/10 text-[var(--accent)]' : 'bg-[var(--status-warning)]/10 text-[var(--status-warning)]'"
                       >
                         {{ user.role === 'admin' ? '无限制' : `${user.accountLimit || 2}个` }}
                       </span>
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)]">
                       {{ user.card ? getDaysLabel(user.card.days) : '无' }}
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm" :class="isExpired(user.card) ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'">
+                    <td
+                      class="whitespace-nowrap px-3 py-2 text-sm"
+                      :class="isExpired(user.card) ? 'text-[var(--status-error)]' : 'text-[var(--text-primary)]'"
+                    >
                       {{ formatDate(user.card?.expiresAt || null) }}
                     </td>
                     <td class="whitespace-nowrap px-3 py-2">
                       <span
                         v-if="user.card"
-                        class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
-                        :class="user.card.enabled === false ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : (isExpired(user.card) ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200')"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
+                        :class="user.card.enabled === false
+                          ? 'bg-[var(--status-error)]/10 text-[var(--status-error)]'
+                          : (isExpired(user.card)
+                            ? 'bg-[var(--status-warning)]/10 text-[var(--status-warning)]'
+                            : 'bg-[var(--status-success)]/10 text-[var(--status-success)]')"
                       >
                         {{ user.card.enabled === false ? '封禁' : (isExpired(user.card) ? '已过期' : '正常') }}
                       </span>
-                      <span v-else class="text-gray-500 dark:text-gray-400">-</span>
+                      <span v-else class="text-[var(--text-muted)]">-</span>
                     </td>
                     <td class="whitespace-nowrap px-3 py-2 text-right text-sm font-medium">
                       <button
-                        class="mr-3 text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                        class="mr-3 text-[var(--accent)] transition-opacity hover:opacity-80"
                         @click="openEditModal(user)"
                       >
                         编辑
                       </button>
                       <button
                         v-if="user.card"
-                        class="mr-3 text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300"
+                        class="mr-3 text-[var(--status-warning)] transition-opacity hover:opacity-80"
                         @click="toggleUserStatus(user)"
                       >
                         {{ user.card.enabled === false ? '解封' : '封禁' }}
                       </button>
                       <button
                         v-if="user.username !== currentUsername"
-                        class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                        class="text-[var(--status-error)] transition-opacity hover:opacity-80"
                         @click="deleteUser(user)"
                       >
                         删除
@@ -1272,7 +1295,7 @@ onMounted(() => {
                     </td>
                   </tr>
                   <tr v-if="users.length === 0">
-                    <td colspan="8" class="px-3 py-4 text-center text-gray-500 dark:text-gray-400">
+                    <td colspan="8" class="px-3 py-4 text-center text-[var(--text-muted)]">
                       暂无用户
                     </td>
                   </tr>
@@ -1281,30 +1304,31 @@ onMounted(() => {
             </div>
           </div>
 
+          <!-- 编辑用户弹窗 -->
           <div
             v-if="showEditModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showEditModal = false"
           >
-            <div class="max-w-md w-full rounded-lg bg-white p-5 dark:bg-gray-800" @click.stop>
-              <h2 class="mb-4 text-lg text-gray-900 font-bold dark:text-white">
-                编辑用户：{{ selectedUser?.username }}
+            <div class="max-w-md w-full border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] p-5 shadow-xl" @click.stop>
+              <h2 class="mb-4 text-lg text-[var(--text-primary)] font-semibold tracking-tight">
+                编辑用户: {{ selectedUser?.username }}
               </h2>
               <div class="space-y-3">
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     用户名
                   </label>
                   <BaseInput
                     v-model="editForm.newUsername"
                     placeholder="输入新用户名（留空则不修改）"
                   />
-                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p class="mt-1 text-xs text-[var(--text-muted)]">
                     用户名只能包含字母、数字和下划线，长度3-32位
                   </p>
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     新密码
                   </label>
                   <BaseInput
@@ -1312,12 +1336,12 @@ onMounted(() => {
                     type="password"
                     placeholder="输入新密码（留空则不修改）"
                   />
-                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p class="mt-1 text-xs text-[var(--text-muted)]">
                     密码长度至少6位，需包含大写字母、小写字母、数字、特殊符号中的至少两种
                   </p>
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     账号额度
                   </label>
                   <BaseInput
@@ -1326,31 +1350,31 @@ onMounted(() => {
                     min="1"
                     placeholder="可添加的账号数量"
                   />
-                  <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p class="mt-1 text-xs text-[var(--text-muted)]">
                     用户最多可添加的农场账号数量
                   </p>
                 </div>
                 <div>
-                  <label class="mb-1 block text-sm text-gray-700 font-medium dark:text-gray-300">
+                  <label class="mb-1 block text-sm text-[var(--text-secondary)] font-medium">
                     过期时间
                   </label>
                   <div class="flex items-center gap-3">
                     <input
                       v-model="editForm.isPermanent"
                       type="checkbox"
-                      class="border-gray-300 rounded text-blue-600 focus:ring-blue-500"
+                      class="border-[var(--border-default)] rounded text-[var(--accent)] focus:ring-[var(--accent)]"
                     >
-                    <span class="text-sm text-gray-600 dark:text-gray-400">永久有效</span>
+                    <span class="text-sm text-[var(--text-secondary)]">永久有效</span>
                   </div>
                   <input
                     v-if="!editForm.isPermanent"
                     v-model="editForm.expiresAt"
                     type="datetime-local"
-                    class="mt-2 w-full border border-gray-200 rounded-lg bg-white px-3 py-2 text-sm dark:border-gray-600 focus:border-blue-500 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    class="mt-2 w-full border border-[var(--border-default)] rounded-lg bg-[var(--surface-app)] px-3 py-2 text-sm text-[var(--text-primary)] transition-all duration-200 focus:border-[var(--accent)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
                   >
                 </div>
               </div>
-              <div class="mt-5 flex justify-end space-x-3">
+              <div class="mt-5 flex justify-end gap-2">
                 <BaseButton variant="secondary" size="sm" @click="showEditModal = false">
                   取消
                 </BaseButton>
@@ -1370,7 +1394,7 @@ onMounted(() => {
         <!-- 登录日志 -->
         <div v-else-if="activeTab === 'log'" class="space-y-4">
           <div class="flex items-center justify-between">
-            <h3 class="text-lg text-gray-900 font-bold dark:text-gray-100">
+            <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
               登录日志
             </h3>
             <div class="flex items-center gap-2">
@@ -1392,71 +1416,75 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+          <div class="overflow-hidden border border-[var(--border-subtle)] rounded-xl">
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-900">
+              <table class="min-w-full">
+                <thead class="bg-[var(--surface-hover)] text-xs text-[var(--text-muted)] tracking-wider uppercase">
                   <tr>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       时间
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       事件
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       用户名
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       错误类型
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       IP地址
                     </th>
-                    <th class="px-3 py-2 text-left text-xs text-gray-500 font-medium uppercase dark:text-gray-300">
+                    <th class="px-3 py-2 text-left font-medium">
                       浏览器
                     </th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                <tbody>
                   <tr v-if="loginLogsLoading">
-                    <td colspan="6" class="px-3 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <td colspan="6" class="px-3 py-8 text-center text-[var(--text-muted)]">
                       加载中...
                     </td>
                   </tr>
                   <tr v-else-if="loginLogs.length === 0">
-                    <td colspan="6" class="px-3 py-8 text-center text-gray-500 dark:text-gray-400">
+                    <td colspan="6" class="px-3 py-8 text-center text-[var(--text-muted)]">
                       暂无登录日志
                     </td>
                   </tr>
-                  <tr v-for="log in loginLogs" :key="log.id">
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-white">
+                  <tr
+                    v-for="log in loginLogs"
+                    :key="log.id"
+                    class="border-b border-[var(--border-subtle)] transition-colors duration-150 hover:bg-[var(--surface-hover)]"
+                  >
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)]">
                       {{ formatLogTime(log.timestamp) }}
                     </td>
                     <td class="whitespace-nowrap px-3 py-2">
                       <span
-                        class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
+                        class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
                         :class="getEventClass(log.event)"
                       >
                         {{ getEventLabel(log.event) }}
                       </span>
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 font-medium dark:text-white">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)] font-medium">
                       {{ log.username }}
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-white">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-primary)]">
                       {{ getErrorTypeLabel(log.errorType) }}
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-600 font-mono dark:text-gray-300">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-secondary)] font-mono">
                       {{ log.ip }}
                     </td>
-                    <td class="whitespace-nowrap px-3 py-2 text-sm text-gray-600 dark:text-gray-300">
+                    <td class="whitespace-nowrap px-3 py-2 text-sm text-[var(--text-secondary)]">
                       {{ parseBrowser(log.userAgent) }}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div v-if="loginLogsTotal > 0" class="border-t border-gray-200 px-4 py-3 text-sm text-gray-500 dark:border-gray-700 dark:text-gray-400">
+            <div v-if="loginLogsTotal > 0" class="border-t border-[var(--border-subtle)] px-4 py-3 text-sm text-[var(--text-muted)]">
               共 {{ loginLogsTotal }} 条记录
             </div>
           </div>
@@ -1464,20 +1492,20 @@ onMounted(() => {
           <!-- 清空日志确认弹窗 -->
           <div
             v-if="showClearLogsConfirm"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
             @click.self="showClearLogsConfirm = false"
           >
-            <div class="max-w-md w-full rounded-lg bg-white p-5 dark:bg-gray-800" @click.stop>
-              <h2 class="mb-4 text-lg text-gray-900 font-bold dark:text-white">
+            <div class="max-w-md w-full border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] p-5 shadow-xl" @click.stop>
+              <h2 class="mb-4 text-lg text-[var(--text-primary)] font-semibold tracking-tight">
                 确认清空日志
               </h2>
-              <p class="mb-4 text-gray-600 dark:text-gray-300">
+              <p class="mb-4 text-sm text-[var(--text-secondary)]">
                 确定要清空所有登录日志吗？此操作不可恢复。
               </p>
-              <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+              <p class="mb-4 text-sm text-[var(--text-muted)]">
                 当前共有 {{ loginLogsTotal }} 条记录
               </p>
-              <div class="flex justify-end space-x-3">
+              <div class="flex justify-end gap-2">
                 <BaseButton variant="secondary" size="sm" @click="showClearLogsConfirm = false">
                   取消
                 </BaseButton>
@@ -1496,43 +1524,41 @@ onMounted(() => {
 
         <!-- 系统配置 -->
         <div v-else-if="activeTab === 'system'" class="space-y-4">
-          <h3 class="text-lg text-gray-900 font-bold dark:text-gray-100">
+          <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
             系统配置
           </h3>
 
           <div class="space-y-4">
-            <div class="border border-gray-200 rounded-lg bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-              <h4 class="mb-3 flex items-center gap-2 text-base text-gray-900 font-bold dark:text-gray-100">
+            <!-- 系统配置卡片 -->
+            <div class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-4">
+              <h4 class="mb-3 flex items-center gap-2 text-base text-[var(--text-primary)] font-semibold">
                 <div class="i-carbon-settings" />
                 系统配置
               </h4>
 
-              <div class="grid grid-cols-2 gap-3 text-sm">
+              <div class="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
                 <BaseInput
                   v-model="localSystemConfig.serverUrl"
                   label="服务器地址"
                   type="text"
                   placeholder="wss://..."
-                  class="col-span-2"
                 />
                 <BaseInput
                   v-model="localSystemConfig.clientVersion"
                   label="客户端版本"
                   type="text"
                   placeholder="1.10.0.13_20260417"
-                  class="col-span-2"
                 />
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-sm text-gray-700 font-medium dark:text-gray-300">平台</label>
+                  <label class="text-sm text-[var(--text-secondary)] font-medium">平台</label>
                   <div class="flex gap-2">
                     <button
                       v-for="option in platformOptions"
                       :key="option.value"
-                      class="rounded-lg px-3 py-1.5 text-sm transition-all"
+                      class="rounded-lg px-3 py-1.5 text-sm transition-all duration-200"
                       :class="localSystemConfig.platform === option.value
-                        ? 'text-white shadow-sm'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
-                      :style="localSystemConfig.platform === option.value ? { backgroundColor: 'var(--theme-primary)' } : {}"
+                        ? 'bg-[var(--accent)] text-white shadow-sm'
+                        : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
                       @click="localSystemConfig.platform = option.value"
                     >
                       {{ option.label }}
@@ -1540,16 +1566,15 @@ onMounted(() => {
                   </div>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-sm text-gray-700 font-medium dark:text-gray-300">系统</label>
+                  <label class="text-sm text-[var(--text-secondary)] font-medium">系统</label>
                   <div class="flex gap-2">
                     <button
                       v-for="option in osOptions"
                       :key="option.value"
-                      class="rounded-lg px-3 py-1.5 text-sm transition-all"
+                      class="rounded-lg px-3 py-1.5 text-sm transition-all duration-200"
                       :class="localSystemConfig.os === option.value
-                        ? 'text-white shadow-sm'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
-                      :style="localSystemConfig.os === option.value ? { backgroundColor: 'var(--theme-primary)' } : {}"
+                        ? 'bg-[var(--accent)] text-white shadow-sm'
+                        : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
                       @click="localSystemConfig.os = option.value"
                     >
                       {{ option.label }}
@@ -1578,20 +1603,21 @@ onMounted(() => {
               </div>
             </div>
 
-            <div class="border border-gray-200 rounded-lg bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
-              <h4 class="mb-3 flex items-center gap-2 text-base text-gray-900 font-bold dark:text-gray-100">
+            <!-- 微信配置卡片 -->
+            <div class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-4">
+              <h4 class="mb-3 flex items-center gap-2 text-base text-[var(--text-primary)] font-semibold">
                 <div class="i-carbon-logo-wechat" />
                 微信配置
               </h4>
 
-              <div class="mb-3 rounded p-2 text-xs" style="background-color: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.1); color: var(--theme-primary);">
-                <div>• 启用微信登录：关闭后普通用户无法使用微信扫码登录</div>
-                <div>• 自动添加账号：扫码成功后自动添加账号，关闭则只返回Code</div>
-                <div>• 用户隔离：开启后普通用户只能看到自己的账号</div>
+              <div class="mb-3 border border-[var(--accent-border)] rounded-lg bg-[var(--accent-muted)] p-3 text-xs text-[var(--accent)]">
+                <div>- 启用微信登录: 关闭后普通用户无法使用微信扫码登录</div>
+                <div>- 自动添加账号: 扫码成功后自动添加账号，关闭则只返回Code</div>
+                <div>- 用户隔离: 开启后普通用户只能看到自己的账号</div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 text-sm">
-                <div class="col-span-2">
+              <div class="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
+                <div class="md:col-span-2">
                   <BaseSwitch
                     v-model="localWxConfig.enabled"
                     label="启用微信登录"
@@ -1602,30 +1628,31 @@ onMounted(() => {
                   label="API地址"
                   type="text"
                   placeholder="http://127.0.0.1:8059/api"
-                  class="col-span-2"
                 />
                 <BaseInput
                   v-model="localWxConfig.apiKey"
                   label="API密钥"
                   type="text"
                   placeholder="可选，用于代理模式"
-                  class="col-span-2"
                 />
                 <BaseInput
                   v-model="localWxConfig.proxyApiUrl"
                   label="代理API地址"
                   type="text"
                   placeholder="http://127.0.0.1:8059/api"
-                  class="col-span-2"
                 />
-                <BaseSwitch
-                  v-model="localWxConfig.autoAddAccount"
-                  label="自动添加账号"
-                />
-                <BaseSwitch
-                  v-model="localWxConfig.userIsolation"
-                  label="用户隔离"
-                />
+                <div class="md:col-span-2">
+                  <BaseSwitch
+                    v-model="localWxConfig.autoAddAccount"
+                    label="自动添加账号"
+                  />
+                </div>
+                <div class="md:col-span-2">
+                  <BaseSwitch
+                    v-model="localWxConfig.userIsolation"
+                    label="用户隔离"
+                  />
+                </div>
               </div>
 
               <div class="mt-3 flex justify-end gap-2">
@@ -1664,6 +1691,3 @@ onMounted(() => {
     />
   </div>
 </template>
-
-<style scoped lang="postcss">
-</style>

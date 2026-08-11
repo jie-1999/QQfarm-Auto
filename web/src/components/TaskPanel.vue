@@ -65,18 +65,18 @@ function formatTaskProgress(task: any) {
     <DailyOverview :daily-gifts="dailyGifts" />
 
     <!-- Growth Task -->
-    <div class="flex flex-col rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+    <div class="flex flex-col border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
       <div class="mb-3 flex items-center justify-between">
-        <h3 class="flex items-center gap-2 font-medium">
-          <div class="i-carbon-growth text-green-500" />
+        <h3 class="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          <div class="i-carbon-growth text-[var(--status-success)]" />
           <span>成长任务</span>
         </h3>
         <span
           v-if="growth"
-          class="rounded px-2 py-0.5 text-xs font-bold"
+          class="inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium"
           :class="growth.doneToday
-            ? 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20'
-            : 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/20'"
+            ? 'bg-[var(--status-success)]/10 text-[var(--status-success)]'
+            : 'bg-[var(--accent-muted)] text-[var(--accent)]'"
         >
           {{ growth.doneToday ? '今日已完成' : `${growth.completedCount}/${growth.totalCount}` }}
         </span>
@@ -84,28 +84,28 @@ function formatTaskProgress(task: any) {
 
       <div
         v-if="!currentAccountId"
-        class="flex flex-col items-center justify-center gap-3 rounded-lg bg-gray-50 py-8 text-center text-gray-500 dark:bg-gray-900/40 dark:text-gray-400"
+        class="flex flex-col items-center justify-center gap-3 rounded-lg bg-[var(--surface-app)] py-8 text-center text-[var(--text-muted)]"
       >
-        <div class="i-carbon-user-offline text-3xl text-gray-400" />
+        <div class="i-carbon-user-offline text-3xl text-[var(--text-muted)]" />
         <div>
-          <div class="text-sm text-gray-600 font-medium dark:text-gray-300">
+          <div class="text-sm text-[var(--text-secondary)] font-medium">
             未登录账号
           </div>
-          <div class="mt-1 text-xs text-gray-400">
+          <div class="mt-1 text-xs text-[var(--text-muted)]">
             请先添加农场账号
           </div>
         </div>
       </div>
       <div
         v-else-if="!status?.connection?.connected"
-        class="flex flex-col items-center justify-center gap-3 rounded-lg bg-gray-50 py-8 text-center dark:bg-gray-900/40"
+        class="flex flex-col items-center justify-center gap-3 rounded-lg bg-[var(--surface-app)] py-8 text-center"
       >
-        <div class="i-carbon-connection-signal-off text-3xl text-gray-400 dark:text-gray-500" />
+        <div class="i-carbon-connection-signal-off text-3xl text-[var(--text-muted)]" />
         <div>
-          <div class="text-sm text-gray-600 font-medium dark:text-gray-300">
+          <div class="text-sm text-[var(--text-secondary)] font-medium">
             账号未登录
           </div>
-          <div class="mt-1 text-xs text-gray-400">
+          <div class="mt-1 text-xs text-[var(--text-muted)]">
             请先运行账号或检查网络连接
           </div>
         </div>
@@ -119,11 +119,11 @@ function formatTaskProgress(task: any) {
           :key="idx"
           class="flex items-center justify-between text-sm"
         >
-          <span class="text-gray-600 dark:text-gray-400">{{ task.desc || task.name }}</span>
-          <span class="text-xs text-gray-500">{{ formatTaskProgress(task) }}</span>
+          <span class="text-[var(--text-secondary)]">{{ task.desc || task.name }}</span>
+          <span class="text-xs text-[var(--text-muted)]">{{ formatTaskProgress(task) }}</span>
         </div>
       </div>
-      <div v-else class="text-center text-sm text-gray-400">
+      <div v-else class="text-center text-sm text-[var(--text-muted)]">
         暂无任务详情
       </div>
     </div>

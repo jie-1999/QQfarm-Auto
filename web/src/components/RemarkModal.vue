@@ -28,7 +28,6 @@ async function save() {
   loading.value = true
   errorMessage.value = ''
   try {
-    // 使用 name 字段存储备注，只发送 id 和 name 两个字段
     const payload = {
       id: props.account.id,
       name: name.value,
@@ -54,9 +53,9 @@ async function save() {
 
 <template>
   <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-    <div class="max-w-sm w-full overflow-hidden rounded-lg bg-white shadow-xl dark:bg-gray-800">
-      <div class="flex items-center justify-between border-b border-gray-200 p-4 dark:border-gray-700">
-        <h3 class="text-lg font-semibold">
+    <div class="max-w-sm w-full overflow-hidden border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] shadow-lg">
+      <div class="flex items-center justify-between border-b border-[var(--border-subtle)] p-4">
+        <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
           修改备注
         </h3>
         <BaseButton variant="ghost" class="!p-1" @click="$emit('close')">
@@ -65,7 +64,7 @@ async function save() {
       </div>
 
       <div class="p-4 space-y-4">
-        <div v-if="errorMessage" class="rounded bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+        <div v-if="errorMessage" class="rounded-lg bg-[var(--status-error)]/10 p-3 text-sm text-[var(--status-error)]">
           {{ errorMessage }}
         </div>
         <BaseInput

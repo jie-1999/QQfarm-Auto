@@ -200,32 +200,32 @@ watch(activeTab, (tab) => {
 
 <template>
   <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-    <div class="max-h-[90vh] max-w-md w-full overflow-hidden rounded-lg shadow-xl" :style="{ background: 'var(--theme-bg)' }">
+    <div class="max-h-[90vh] max-w-md w-full overflow-hidden border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] shadow-xl">
       <!-- Header -->
-      <div class="flex items-center justify-between border-b p-4" :style="{ borderColor: 'color-mix(in srgb, var(--theme-text) 10%, transparent)' }">
-        <h3 class="text-lg font-semibold" :style="{ color: 'var(--theme-text)' }">
+      <div class="flex items-center justify-between border-b border-[var(--border-subtle)] p-4">
+        <h3 class="text-lg text-[var(--text-primary)] font-semibold tracking-tight">
           {{ editData ? '编辑账号' : '添加账号' }}
         </h3>
         <BaseButton variant="ghost" class="!p-1" @click="close">
-          <div class="i-carbon-close text-xl" :style="{ color: 'var(--theme-text)' }" />
+          <div class="i-carbon-close text-xl text-[var(--text-secondary)]" />
         </BaseButton>
       </div>
 
       <div class="max-h-[calc(90vh-80px)] overflow-y-auto p-4">
         <!-- 错误信息 -->
-        <div v-if="errorMessage" class="mb-4 rounded p-3 text-sm" :style="{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }">
+        <div v-if="errorMessage" class="mb-4 rounded-lg bg-[var(--status-error)]/10 p-3 text-sm text-[var(--status-error)]">
           {{ errorMessage }}
         </div>
 
         <!-- Tabs -->
-        <div class="mb-4 flex border-b" :style="{ borderColor: 'color-mix(in srgb, var(--theme-text) 10%, transparent)' }">
+        <div class="mb-4 flex border-b border-[var(--border-subtle)]">
           <button
             v-if="editData || !wxLoginStore.config.enabled"
             class="flex-1 py-2 text-center text-sm font-medium transition-colors"
             :class="activeTab === 'manual' ? 'border-b-2' : 'opacity-60'"
             :style="{
-              color: activeTab === 'manual' ? 'var(--theme-primary)' : 'var(--theme-text)',
-              borderColor: 'var(--theme-primary)',
+              color: activeTab === 'manual' ? 'var(--accent)' : 'var(--text-muted)',
+              borderColor: 'var(--accent)',
             }"
             @click="activeTab = 'manual'"
           >
@@ -236,8 +236,8 @@ watch(activeTab, (tab) => {
             class="flex-1 py-2 text-center text-sm font-medium transition-colors"
             :class="activeTab === 'wx' ? 'border-b-2' : 'opacity-60'"
             :style="{
-              color: activeTab === 'wx' ? 'var(--theme-primary)' : 'var(--theme-text)',
-              borderColor: 'var(--theme-primary)',
+              color: activeTab === 'wx' ? 'var(--accent)' : 'var(--text-muted)',
+              borderColor: 'var(--accent)',
             }"
             @click="activeTab = 'wx'"
           >
@@ -256,25 +256,23 @@ watch(activeTab, (tab) => {
           <div class="flex flex-col items-center justify-center py-4 space-y-4">
             <div
               v-if="wxQrImageSrc"
-              class="border rounded-lg p-2"
-              :style="{ borderColor: 'color-mix(in srgb, var(--theme-text) 20%, transparent)', background: '#fff' }"
+              class="border border-[var(--border-default)] rounded-lg bg-[var(--surface-elevated)] p-2"
             >
               <img :src="wxQrImageSrc" class="h-48 w-48">
             </div>
             <div
               v-else
-              class="h-48 w-48 flex items-center justify-center rounded-lg"
-              :style="{ background: 'color-mix(in srgb, var(--theme-bg) 90%, var(--theme-text))' }"
+              class="h-48 w-48 flex items-center justify-center rounded-lg bg-[var(--surface-hover)]"
             >
-              <div v-if="wxLoginStore.isLoading" i-svg-spinners-90-ring-with-bg class="text-3xl" :style="{ color: 'var(--theme-primary)' }" />
-              <span v-else class="text-sm" :style="{ color: 'var(--theme-text)' }">点击获取二维码</span>
+              <div v-if="wxLoginStore.isLoading" i-svg-spinners-90-ring-with-bg class="text-3xl text-[var(--accent)]" />
+              <span v-else class="text-sm text-[var(--text-muted)]">点击获取二维码</span>
             </div>
 
-            <p class="text-center text-sm" :style="{ color: 'var(--theme-text)' }">
+            <p class="text-center text-sm text-[var(--text-secondary)]">
               {{ wxLoginStore.statusMessage }}
             </p>
 
-            <p v-if="wxLoginStore.errorMessage" class="text-center text-sm text-red-600">
+            <p v-if="wxLoginStore.errorMessage" class="text-center text-sm text-[var(--status-error)]">
               {{ wxLoginStore.errorMessage }}
             </p>
 
@@ -283,7 +281,7 @@ watch(activeTab, (tab) => {
             </BaseButton>
           </div>
 
-          <div class="text-center text-xs opacity-60" :style="{ color: 'var(--theme-text)' }">
+          <div class="text-center text-xs text-[var(--text-muted)]">
             使用微信扫描二维码登录，登录成功后将自动添加账号
           </div>
         </div>
@@ -317,9 +315,9 @@ watch(activeTab, (tab) => {
                 type="radio"
                 value="qq"
                 class="h-4 w-4"
-                :style="{ accentColor: 'var(--theme-primary)' }"
+                :style="{ accentColor: 'var(--accent)' }"
               >
-              <span class="text-sm" :style="{ color: 'var(--theme-text)' }">QQ小程序</span>
+              <span class="text-sm text-[var(--text-secondary)]">QQ小程序</span>
             </label>
             <label class="flex cursor-pointer items-center gap-2">
               <input
@@ -327,9 +325,9 @@ watch(activeTab, (tab) => {
                 type="radio"
                 value="wx"
                 class="h-4 w-4"
-                :style="{ accentColor: 'var(--theme-primary)' }"
+                :style="{ accentColor: 'var(--accent)' }"
               >
-              <span class="text-sm" :style="{ color: 'var(--theme-text)' }">微信小程序</span>
+              <span class="text-sm text-[var(--text-secondary)]">微信小程序</span>
             </label>
           </div>
 

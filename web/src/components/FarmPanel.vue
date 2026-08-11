@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
 import LandCard from '@/components/LandCard.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 import { useAccountStore } from '@/stores/account'
 import { useFarmStore } from '@/stores/farm'
 import { useStatusStore } from '@/stores/status'
@@ -57,11 +58,11 @@ function handleOperate(opType: string) {
 }
 
 const operations = [
-  { type: 'harvest', label: '收获', icon: 'i-carbon-wheat', color: 'bg-blue-600 hover:bg-blue-700' },
-  { type: 'clear', label: '除草/虫', icon: 'i-carbon-clean', color: 'bg-teal-600 hover:bg-teal-700' },
-  { type: 'plant', label: '种植', icon: 'i-carbon-sprout', color: 'bg-green-600 hover:bg-green-700' },
-  { type: 'upgrade', label: '升级土地', icon: 'i-carbon-upgrade', color: 'bg-purple-600 hover:bg-purple-700' },
-  { type: 'all', label: '一键全收', icon: 'i-carbon-flash', color: 'bg-orange-600 hover:bg-orange-700' },
+  { type: 'harvest', label: '收获', icon: 'i-carbon-wheat', variant: 'primary' as const },
+  { type: 'clear', label: '除草/虫', icon: 'i-carbon-clean', variant: 'outline' as const },
+  { type: 'plant', label: '种植', icon: 'i-carbon-sprout', variant: 'success' as const },
+  { type: 'upgrade', label: '升级土地', icon: 'i-carbon-upgrade', variant: 'secondary' as const },
+  { type: 'all', label: '一键全收', icon: 'i-carbon-flash', variant: 'danger' as const },
 ]
 
 async function refresh() {
@@ -104,47 +105,66 @@ onUnmounted(() => {
   pause()
   pauseRefresh()
 })
+
+const badgeStyles = {
+  harvestable: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b' },
+  growing: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981' },
+  empty: { bg: 'rgba(161, 161, 170, 0.12)', text: '#a1a1aa' },
+  dead: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444' },
+} as const
 </script>
 
 <template>
   <div class="space-y-4">
-    <div class="rounded-lg bg-white shadow dark:bg-gray-800">
+    <div class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)]">
       <!-- Header with Title and Actions -->
-      <div class="flex flex-col items-center justify-between gap-4 border-b border-gray-100 p-4 sm:flex-row dark:border-gray-700">
-        <h3 class="flex items-center gap-2 text-lg font-bold">
+      <div class="flex flex-col items-center justify-between gap-4 border-b border-[var(--border-subtle)] p-4 sm:flex-row">
+        <h3 class="flex items-center gap-2 text-lg font-semibold tracking-tight">
           <div class="i-carbon-grid text-xl" />
           土地详情
         </h3>
         <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-          <button
+          <BaseButton
             v-for="op in operations"
             :key="op.type"
-            class="flex items-center justify-center gap-1.5 rounded px-3 py-2 text-sm text-white transition disabled:cursor-not-allowed disabled:opacity-50"
-            :class="op.color"
+            :variant="op.variant"
+            size="sm"
             :disabled="operating"
             @click="handleOperate(op.type)"
           >
             <div :class="op.icon" />
             {{ op.label }}
-          </button>
+          </BaseButton>
         </div>
       </div>
 
       <!-- Summary -->
-      <div class="flex flex-wrap gap-4 border-b border-gray-100 bg-gray-50 p-4 text-sm dark:border-gray-700 dark:bg-gray-900/50">
-        <div class="flex items-center gap-1.5 rounded-full bg-orange-100 px-3 py-1 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+      <div class="flex flex-wrap gap-4 border-b border-[var(--border-subtle)] bg-[var(--surface-app)] p-4 text-sm">
+        <div
+          class="flex items-center gap-1.5 rounded-full px-3 py-1"
+          :style="{ background: badgeStyles.harvestable.bg, color: badgeStyles.harvestable.text }"
+        >
           <div class="i-carbon-clean" />
           <span class="font-medium">可收: {{ summary?.harvestable || 0 }}</span>
         </div>
-        <div class="flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+        <div
+          class="flex items-center gap-1.5 rounded-full px-3 py-1"
+          :style="{ background: badgeStyles.growing.bg, color: badgeStyles.growing.text }"
+        >
           <div class="i-carbon-sprout" />
           <span class="font-medium">生长: {{ summary?.growing || 0 }}</span>
         </div>
-        <div class="flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+        <div
+          class="flex items-center gap-1.5 rounded-full px-3 py-1"
+          :style="{ background: badgeStyles.empty.bg, color: badgeStyles.empty.text }"
+        >
           <div class="i-carbon-checkbox" />
           <span class="font-medium">空闲: {{ summary?.empty || 0 }}</span>
         </div>
-        <div class="flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+        <div
+          class="flex items-center gap-1.5 rounded-full px-3 py-1"
+          :style="{ background: badgeStyles.dead.bg, color: badgeStyles.dead.text }"
+        >
           <div class="i-carbon-warning" />
           <span class="font-medium">枯萎: {{ summary?.dead || 0 }}</span>
         </div>
@@ -153,34 +173,34 @@ onUnmounted(() => {
       <!-- Grid -->
       <div class="p-4">
         <div v-if="loading || statusLoading" class="flex justify-center py-12">
-          <div class="i-svg-spinners-90-ring-with-bg text-4xl text-blue-500" />
+          <div class="i-svg-spinners-90-ring-with-bg text-4xl text-[var(--accent)]" />
         </div>
 
-        <div v-else-if="!currentAccountId" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
-          <div class="i-carbon-user-offline text-4xl text-gray-400" />
+        <div v-else-if="!currentAccountId" class="flex flex-col items-center justify-center gap-4 rounded-xl bg-[var(--surface-card)] p-12 text-center">
+          <div class="i-carbon-user-offline text-4xl text-[var(--text-muted)]" />
           <div>
-            <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+            <div class="text-lg text-[var(--text-primary)] font-medium">
               未登录账号
             </div>
-            <div class="mt-1 text-sm text-gray-400">
+            <div class="mt-1 text-sm text-[var(--text-muted)]">
               请先添加农场账号
             </div>
           </div>
         </div>
 
-        <div v-else-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
-          <div class="i-carbon-connection-signal-off text-4xl text-gray-400" />
+        <div v-else-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 rounded-xl bg-[var(--surface-card)] p-12 text-center">
+          <div class="i-carbon-connection-signal-off text-4xl text-[var(--text-muted)]" />
           <div>
-            <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+            <div class="text-lg text-[var(--text-primary)] font-medium">
               账号未登录
             </div>
-            <div class="mt-1 text-sm text-gray-400">
+            <div class="mt-1 text-sm text-[var(--text-muted)]">
               请先运行账号或检查网络连接
             </div>
           </div>
         </div>
 
-        <div v-else-if="!lands || lands.length === 0" class="flex justify-center py-12 text-gray-500">
+        <div v-else-if="!lands || lands.length === 0" class="flex justify-center py-12 text-[var(--text-muted)]">
           暂无土地数据
         </div>
 

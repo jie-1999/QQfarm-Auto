@@ -1,29 +1,33 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   type?: string
   placeholder?: string
   label?: string
   disabled?: boolean
   clearable?: boolean
-}>()
+}>(), {
+  type: 'text',
+})
+
 const emit = defineEmits<{
   (e: 'clear'): void
 }>()
+
 const model = defineModel<string | number>()
 const showPassword = ref(false)
+
 const inputType = computed(() => {
-  if (props.type === 'password' && showPassword.value) {
+  if (props.type === 'password' && showPassword.value)
     return 'text'
-  }
   return props.type || 'text'
 })
 </script>
 
 <template>
   <div class="flex flex-col gap-1.5">
-    <label v-if="label" class="text-sm text-gray-700 font-medium dark:text-gray-300">
+    <label v-if="label" class="text-sm text-[var(--text-secondary)] font-medium">
       {{ label }}
     </label>
     <div class="relative">
@@ -32,23 +36,22 @@ const inputType = computed(() => {
         :type="inputType"
         :placeholder="placeholder"
         :disabled="disabled"
-        class="base-input w-full border border-gray-200 rounded-lg bg-white px-3 py-2 outline-none transition-all duration-200 dark:border-gray-700 focus:border-green-500 dark:bg-gray-800 disabled:bg-gray-50 dark:text-white disabled:text-gray-400 focus:ring-2 focus:ring-green-500/20 dark:focus:border-green-500 dark:disabled:bg-gray-800/50"
+        class="w-full border border-[var(--border-default)] rounded-lg bg-[var(--surface-app)] px-3 py-2 text-sm text-[var(--text-primary)] transition-all duration-200 disabled:cursor-not-allowed focus:border-[var(--accent)] placeholder:text-[var(--text-muted)] disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/20"
         :class="{ 'pr-10': type === 'password' || (clearable && model) }"
       >
       <button
         v-if="type === 'password'"
         type="button"
-        class="absolute right-3 top-1/2 text-gray-400 -translate-y-1/2 hover:text-gray-600 dark:hover:text-gray-300"
+        class="absolute right-3 top-1/2 text-[var(--text-muted)] transition-colors -translate-y-1/2 hover:text-[var(--text-secondary)]"
         @click="showPassword = !showPassword"
       >
         <div v-if="showPassword" class="i-carbon-view-off" />
         <div v-else class="i-carbon-view" />
       </button>
-
       <button
         v-else-if="clearable && model"
         type="button"
-        class="absolute right-3 top-1/2 text-gray-400 -translate-y-1/2 hover:text-gray-600 dark:hover:text-gray-300"
+        class="absolute right-3 top-1/2 text-[var(--text-muted)] transition-colors -translate-y-1/2 hover:text-[var(--text-secondary)]"
         @click="model = ''; emit('clear')"
       >
         <div class="i-carbon-close" />
@@ -58,8 +61,8 @@ const inputType = computed(() => {
 </template>
 
 <style scoped>
-.base-input::-ms-reveal,
-.base-input::-ms-clear {
+input::-ms-reveal,
+input::-ms-clear {
   display: none;
 }
 </style>

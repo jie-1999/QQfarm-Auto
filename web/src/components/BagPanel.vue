@@ -3,6 +3,7 @@ import { useIntervalFn } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import ConfirmModal from '@/components/ConfirmModal.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 import { useAccountStore } from '@/stores/account'
 import { useBagStore } from '@/stores/bag'
 import { useStatusStore } from '@/stores/status'
@@ -79,10 +80,10 @@ const selectedSellableCount = computed(() => {
 function getPriceClass(item: any) {
   const priceId = Number(item?.priceId || 0)
   if (priceId === 1005)
-    return 'text-amber-400 dark:text-amber-300'
+    return 'text-amber-400'
   if (priceId === 1002)
-    return 'text-sky-400 dark:text-sky-300'
-  return 'text-gray-400'
+    return 'text-sky-400'
+  return 'text-[var(--text-muted)]'
 }
 
 function canSell(item: any) {
@@ -335,45 +336,45 @@ useIntervalFn(loadBag, 60000)
 <template>
   <div class="space-y-4">
     <div class="mb-4 flex items-center justify-between">
-      <h2 class="flex items-center gap-2 text-2xl font-bold">
+      <h2 class="flex items-center gap-2 text-lg font-semibold tracking-tight">
         <div class="i-carbon-inventory-management" />
         背包
       </h2>
-      <div v-if="items.length" class="text-sm text-gray-500">
+      <div v-if="items.length" class="text-xs text-[var(--text-muted)]">
         共 {{ items.length }} 种物品
       </div>
     </div>
 
     <div v-if="bagLoading || statusLoading" class="flex justify-center py-12">
-      <div class="i-svg-spinners-90-ring-with-bg text-4xl text-blue-500" />
+      <div class="i-svg-spinners-90-ring-with-bg text-4xl text-[var(--accent)]" />
     </div>
 
-    <div v-else-if="!currentAccountId" class="rounded-lg bg-white p-8 text-center text-gray-500 shadow dark:bg-gray-800">
+    <div v-else-if="!currentAccountId" class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-8 text-center text-[var(--text-muted)]">
       请选择账号后查看背包
     </div>
 
-    <div v-else-if="statusError" class="border border-red-200 rounded-lg bg-red-50 p-8 text-center text-red-500 shadow dark:border-red-800 dark:bg-red-900/20">
-      <div class="mb-2 text-lg font-bold">
+    <div v-else-if="statusError" class="border border-[var(--status-error)]/20 rounded-xl bg-[var(--status-error)]/5 p-8 text-center text-[var(--status-error)]">
+      <div class="mb-2 text-sm font-semibold">
         获取数据失败
       </div>
-      <div class="text-sm">
+      <div class="text-xs">
         {{ statusError }}
       </div>
     </div>
 
-    <div v-else-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
-      <div class="i-carbon-connection-signal-off text-4xl text-gray-400" />
+    <div v-else-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-12 text-center text-[var(--text-muted)]">
+      <div class="i-carbon-connection-signal-off text-4xl text-[var(--text-muted)]" />
       <div>
-        <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+        <div class="text-sm text-[var(--text-secondary)] font-medium">
           账号未登录
         </div>
-        <div class="mt-1 text-sm text-gray-400">
+        <div class="mt-1 text-xs text-[var(--text-muted)]">
           请先运行账号或检查网络连接
         </div>
       </div>
     </div>
 
-    <div v-else-if="items.length === 0" class="rounded-lg bg-white p-8 text-center text-gray-500 shadow dark:bg-gray-800">
+    <div v-else-if="items.length === 0" class="border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-8 text-center text-[var(--text-muted)]">
       无可展示物品
     </div>
 
@@ -382,46 +383,39 @@ useIntervalFn(loadBag, 60000)
         <button
           v-for="cat in CATEGORY_OPTIONS"
           :key="cat.value"
-          class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
+          class="rounded-lg px-3 py-1.5 text-xs font-medium transition-colors duration-150"
           :class="selectedCategory === cat.value
-            ? 'bg-blue-500 text-white dark:bg-blue-600'
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
+            ? 'bg-[var(--accent)] text-white'
+            : 'bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:bg-[var(--surface-active)]'"
           @click="selectedCategory = cat.value"
         >
           {{ cat.label }}
-          <span class="ml-1 text-xs opacity-70">({{ categoryCounts[cat.value] || 0 }})</span>
+          <span class="ml-1 opacity-70">({{ categoryCounts[cat.value] || 0 }})</span>
         </button>
 
         <div class="flex-1" />
 
         <template v-if="selectedCategory === 'fruit' || selectedCategory === 'all'">
-          <button
-            class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
-            :class="batchMode
-              ? 'bg-orange-500 text-white dark:bg-orange-600'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'"
+          <BaseButton
+            size="sm"
+            :variant="batchMode ? 'outline' : 'secondary'"
             @click="toggleBatchMode"
           >
-            <div v-if="batchMode" class="i-carbon-close mr-1 inline-block" />
+            <div v-if="batchMode" class="i-carbon-close" />
             {{ batchMode ? '取消批量' : '批量出售' }}
-          </button>
+          </BaseButton>
           <template v-if="batchMode">
-            <button
-              class="rounded-lg bg-blue-500 px-3 py-1.5 text-sm text-white font-medium transition dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700"
-              @click="selectAllSellable"
-            >
+            <BaseButton size="sm" variant="secondary" @click="selectAllSellable">
               全选
-            </button>
-            <button
-              class="rounded-lg px-3 py-1.5 text-sm font-medium transition"
-              :class="selectedSellableCount > 0
-                ? 'bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700'
-                : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'"
+            </BaseButton>
+            <BaseButton
+              size="sm"
+              variant="danger"
               :disabled="selectedSellableCount === 0"
               @click="handleBatchSellClick"
             >
               出售 ({{ selectedSellableCount }})
-            </button>
+            </BaseButton>
           </template>
         </template>
       </div>
@@ -430,14 +424,14 @@ useIntervalFn(loadBag, 60000)
         <div
           v-for="item in filteredItems"
           :key="item.id"
-          class="group relative flex flex-col items-center border rounded-lg bg-white p-3 transition dark:border-gray-700 dark:bg-gray-800 hover:shadow-md"
+          class="group relative flex flex-col items-center border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-3 transition-all duration-200 hover:shadow-lg"
           :class="{
-            'ring-2 ring-orange-500 dark:ring-orange-400': batchMode && selectedForBatch.has(Number(item.id)),
+            'ring-2 ring-[var(--accent)]': batchMode && selectedForBatch.has(Number(item.id)),
             'opacity-50': batchMode && canBatchSell(item) && !selectedForBatch.has(Number(item.id)),
           }"
           @click="batchMode && canBatchSell(item) && handleSellClick(item)"
         >
-          <div class="absolute left-2 top-2 text-xs text-gray-400 font-mono">
+          <div class="absolute left-2 top-2 text-[10px] text-[var(--text-muted)] font-mono">
             #{{ item.id }}
           </div>
 
@@ -445,7 +439,7 @@ useIntervalFn(loadBag, 60000)
             <template v-if="!batchMode">
               <button
                 v-if="canSell(item)"
-                class="rounded bg-red-500 px-1.5 py-0.5 text-[10px] text-white opacity-70 transition dark:bg-red-600 hover:opacity-100"
+                class="rounded bg-[var(--status-error)] px-1.5 py-0.5 text-[10px] text-white opacity-70 transition-opacity duration-150 hover:opacity-100"
                 title="出售全部"
                 @click.stop="handleSellClick(item)"
               >
@@ -453,7 +447,7 @@ useIntervalFn(loadBag, 60000)
               </button>
               <button
                 v-if="canUse(item)"
-                class="rounded bg-green-500 px-1.5 py-0.5 text-[10px] text-white opacity-70 transition dark:bg-green-600 hover:opacity-100"
+                class="rounded bg-[var(--status-success)] px-1.5 py-0.5 text-[10px] text-white opacity-70 transition-opacity duration-150 hover:opacity-100"
                 title="使用全部"
                 @click.stop="handleUseClick(item)"
               >
@@ -462,17 +456,17 @@ useIntervalFn(loadBag, 60000)
             </template>
             <div
               v-else-if="canBatchSell(item)"
-              class="h-5 w-5 flex items-center justify-center border-2 rounded transition"
+              class="h-5 w-5 flex items-center justify-center border-2 rounded transition-colors duration-150"
               :class="selectedForBatch.has(Number(item.id))
-                ? 'border-orange-500 bg-orange-500 text-white'
-                : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700'"
+                ? 'border-[var(--accent)] bg-[var(--accent)] text-white'
+                : 'border-[var(--border-default)] bg-[var(--surface-card)]'"
             >
               <div v-if="selectedForBatch.has(Number(item.id))" class="i-carbon-checkmark text-xs" />
             </div>
           </div>
 
           <div
-            class="thumb-wrap mb-2 mt-6 h-16 w-16 flex items-center justify-center rounded-full bg-gray-50 dark:bg-gray-700/50"
+            class="thumb-wrap mb-2 mt-6 h-16 w-16 flex items-center justify-center rounded-full bg-[var(--surface-hover)]"
             :data-fallback="(item.name || '物').slice(0, 1)"
           >
             <img
@@ -483,16 +477,16 @@ useIntervalFn(loadBag, 60000)
               loading="lazy"
               @error="imageErrors[item.id] = true"
             >
-            <div v-else class="text-2xl text-gray-400 font-bold uppercase">
+            <div v-else class="text-2xl text-[var(--text-muted)] font-bold uppercase">
               {{ (item.name || '物').slice(0, 1) }}
             </div>
           </div>
 
-          <div class="mb-1 w-full truncate px-2 text-center text-sm font-bold" :title="item.name">
+          <div class="mb-1 w-full truncate px-2 text-center text-sm text-[var(--text-primary)] font-semibold" :title="item.name">
             {{ item.name || `物品${item.id}` }}
           </div>
 
-          <div class="mb-2 flex flex-col items-center gap-0.5 text-xs text-gray-400">
+          <div class="mb-2 flex flex-col items-center gap-0.5 text-xs text-[var(--text-muted)]">
             <span v-if="item.uid">UID: {{ item.uid }}</span>
             <span>
               类型: {{ item.itemType || 0 }}
@@ -501,7 +495,7 @@ useIntervalFn(loadBag, 60000)
             </span>
           </div>
 
-          <div class="mt-auto font-medium" :class="item.hoursText ? 'text-blue-500' : 'text-gray-600 dark:text-gray-300'">
+          <div class="mt-auto font-medium font-mono" :class="item.hoursText ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'">
             {{ item.hoursText || `x${item.count || 0}` }}
           </div>
         </div>
@@ -530,7 +524,7 @@ useIntervalFn(loadBag, 60000)
   content: attr(data-fallback);
   font-size: 1.5rem;
   font-weight: bold;
-  color: #9ca3af;
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 </style>

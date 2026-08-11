@@ -108,7 +108,7 @@ const displayName = computed(() => {
   // Try to use nickname from status (game server)
   const gameName = status.value?.status?.name
   if (gameName) {
-    // 如果有备注，显示为“昵称（备注）”
+    // 如果有备注，显示为"昵称（备注）"
     if (account?.name) {
       return `${gameName} (${account.name})`
     }
@@ -118,7 +118,7 @@ const displayName = computed(() => {
   // Check login status
   if (!status.value?.connection?.connected) {
     if (account) {
-      // 如果有备注和昵称，显示为“昵称（备注）”
+      // 如果有备注和昵称，显示为"昵称（备注）"
       if (account.name && account.nick) {
         return `${account.nick} (${account.name})`
       }
@@ -129,7 +129,7 @@ const displayName = computed(() => {
 
   // Fallback to account name (usually ID) or '未命名'
   if (account) {
-    // 如果有备注和昵称，显示为“昵称（备注）”
+    // 如果有备注和昵称，显示为"昵称（备注）"
     if (account.name && account.nick) {
       return `${account.nick} (${account.name})`
     }
@@ -232,13 +232,10 @@ function updateCountdowns() {
 
 watch(status, (newVal) => {
   if (newVal?.nextChecks) {
-    // Only update local counters if they are significantly different or 0
-    // Actually, we should sync from server periodically.
-    // Here we just take server value when it comes.
     localNextFarmRemainSec = newVal.nextChecks.farmRemainSec || 0
     localNextHelpRemainSec = newVal.nextChecks.helpRemainSec || 0
     localNextStealRemainSec = newVal.nextChecks.stealRemainSec || 0
-    updateCountdowns() // Update immediately
+    updateCountdowns()
   }
   if (newVal?.uptime !== undefined) {
     localUptime.value = newVal.uptime
@@ -262,18 +259,18 @@ function formatDuration(seconds: number) {
 
 function getLogTagClass(tag: string) {
   if (tag === '错误')
-    return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+    return 'bg-[var(--status-error)]/10 text-[var(--status-error)]'
   if (tag === '系统')
-    return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+    return 'bg-[var(--accent)]/10 text-[var(--accent)]'
   if (tag === '警告')
-    return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
-  return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+    return 'bg-[var(--status-warning)]/10 text-[var(--status-warning)]'
+  return 'bg-[var(--status-success)]/10 text-[var(--status-success)]'
 }
 
 function getLogMsgClass(tag: string) {
   if (tag === '错误')
-    return 'text-red-600 dark:text-red-400'
-  return 'text-gray-700 dark:text-gray-300'
+    return 'text-[var(--status-error)]'
+  return 'text-[var(--text-secondary)]'
 }
 
 function formatLogTime(timeStr: string) {
@@ -285,18 +282,18 @@ function formatLogTime(timeStr: string) {
 }
 
 const OP_META: Record<string, { label: string, icon: string, color: string }> = {
-  harvest: { label: '收获', icon: 'i-carbon-crop-growth', color: 'text-green-500' },
-  water: { label: '浇水', icon: 'i-carbon-rain-drop', color: 'text-blue-400' },
-  weed: { label: '除草', icon: 'i-carbon-cut-out', color: 'text-yellow-500' },
-  bug: { label: '除虫', icon: 'i-carbon-warning-alt', color: 'text-red-400' },
-  fertilize: { label: '施肥', icon: 'i-carbon-chemistry', color: 'text-emerald-500' },
-  plant: { label: '种植', icon: 'i-carbon-tree', color: 'text-lime-500' },
-  steal: { label: '偷菜', icon: 'i-carbon-run', color: 'text-orange-500' },
-  helpWater: { label: '帮浇水', icon: 'i-carbon-rain-drop', color: 'text-blue-300' },
-  helpWeed: { label: '帮除草', icon: 'i-carbon-cut-out', color: 'text-yellow-400' },
-  helpBug: { label: '帮除虫', icon: 'i-carbon-warning-alt', color: 'text-red-300' },
-  taskClaim: { label: '任务', icon: 'i-carbon-task-complete', color: 'text-indigo-500' },
-  sell: { label: '出售', icon: 'i-carbon-shopping-cart', color: 'text-pink-500' },
+  harvest: { label: '收获', icon: 'i-carbon-crop-growth', color: 'text-[var(--status-success)]' },
+  water: { label: '浇水', icon: 'i-carbon-rain-drop', color: 'text-[var(--status-info)]' },
+  weed: { label: '除草', icon: 'i-carbon-cut-out', color: 'text-[var(--status-warning)]' },
+  bug: { label: '除虫', icon: 'i-carbon-warning-alt', color: 'text-[var(--status-error)]' },
+  fertilize: { label: '施肥', icon: 'i-carbon-chemistry', color: 'text-[var(--status-success)]' },
+  plant: { label: '种植', icon: 'i-carbon-tree', color: 'text-[var(--status-success)]' },
+  steal: { label: '偷菜', icon: 'i-carbon-run', color: 'text-[var(--status-warning)]' },
+  helpWater: { label: '帮浇水', icon: 'i-carbon-rain-drop', color: 'text-[var(--status-info)]' },
+  helpWeed: { label: '帮除草', icon: 'i-carbon-cut-out', color: 'text-[var(--status-warning)]' },
+  helpBug: { label: '帮除虫', icon: 'i-carbon-warning-alt', color: 'text-[var(--status-error)]' },
+  taskClaim: { label: '任务', icon: 'i-carbon-task-complete', color: 'text-[var(--accent)]' },
+  sell: { label: '出售', icon: 'i-carbon-shopping-cart', color: 'text-[var(--status-error)]' },
 }
 
 const filteredOperations = computed(() => {
@@ -319,7 +316,7 @@ function getOpIcon(key: string | number) {
 }
 
 function getOpColor(key: string | number) {
-  return OP_META[String(key)]?.color || 'text-gray-400'
+  return OP_META[String(key)]?.color || 'text-[var(--text-muted)]'
 }
 
 function getExpPercent(p: any) {
@@ -349,7 +346,6 @@ async function refresh(forceReloadLogs = false) {
     if (!acc)
       return
 
-    // 首次加载、断线兜底时走 HTTP；连接正常时优先走 WS 实时推送
     if (!realtimeConnected.value) {
       await statusStore.fetchStatus(currentAccountId.value)
       await statusStore.fetchAccountLogs()
@@ -364,7 +360,6 @@ async function refresh(forceReloadLogs = false) {
       })
     }
 
-    // 仅在账号已运行且连接就绪后拉背包，避免启动阶段触发500
     await refreshBag()
   }
 }
@@ -452,159 +447,159 @@ onMounted(async () => {
   scrollToBottom()
 })
 
-// Auto refresh fallback every 10s (WS 断开或筛选条件启用时会回退 HTTP)
+// Auto refresh fallback every 10s
 useIntervalFn(refresh, 10000)
 // Countdown timer (every 1s)
 useIntervalFn(updateCountdowns, 1000)
 </script>
 
 <template>
-  <div class="flex flex-col gap-6 pt-6">
+  <div class="mx-auto max-w-7xl flex flex-col gap-6 p-4 pt-6 md:p-6">
     <!-- Status Cards -->
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 sm:grid-cols-2">
       <!-- Account & Exp -->
-      <div class="flex flex-col rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-        <div class="mb-2 flex items-start justify-between">
-          <div class="flex items-center gap-1.5 text-sm text-gray-500">
+      <div class="flex flex-col border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
+        <div class="mb-3 flex items-start justify-between">
+          <div class="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
             <div class="i-fas-user-circle" />
             账号
           </div>
-          <div class="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+          <span class="inline-flex rounded bg-[var(--accent-muted)] px-1.5 py-0.5 text-[10px] text-[var(--accent)] font-medium">
             Lv.{{ status?.status?.level || 0 }}
-          </div>
+          </span>
         </div>
-        <div class="mb-1 truncate text-xl font-bold" :title="displayName">
+        <div class="mb-1 truncate text-lg font-semibold tracking-tight" :title="displayName">
           {{ displayName }}
         </div>
 
         <!-- Level Progress -->
         <div class="mt-auto">
-          <div class="mb-1 flex justify-between text-xs text-gray-500">
+          <div class="mb-1.5 flex items-center justify-between text-xs text-[var(--text-muted)]">
             <div class="flex items-center gap-1">
-              <div class="i-fas-bolt text-blue-400" />
+              <div class="i-fas-bolt text-[var(--accent)]" />
               <span>EXP</span>
             </div>
-            <span>{{ status?.levelProgress?.current || 0 }} / {{ status?.levelProgress?.needed || '?' }}</span>
+            <span class="font-mono">{{ status?.levelProgress?.current || 0 }} / {{ status?.levelProgress?.needed || '?' }}</span>
           </div>
-          <div class="h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
+          <div class="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-hover)]">
             <div
-              class="h-full rounded-full bg-blue-500 transition-all duration-500"
+              class="h-full rounded-full bg-[var(--accent)] transition-all duration-500"
               :style="{ width: `${getExpPercent(status?.levelProgress)}%` }"
             />
           </div>
-          <div class="mt-2 flex justify-between text-xs text-gray-400">
-            <span>效率: {{ expRate }}</span>
+          <div class="mt-2 flex justify-between text-xs text-[var(--text-muted)]">
+            <span>效率: <span class="font-mono">{{ expRate }}</span></span>
             <span>{{ timeToLevel }}</span>
           </div>
         </div>
       </div>
 
       <!-- Assets & Status -->
-      <div class="flex flex-col justify-between rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+      <div class="flex flex-col justify-between border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
         <div class="flex justify-between">
           <div>
-            <div class="flex items-center gap-1.5 text-xs text-gray-500">
-              <div class="i-fas-coins text-yellow-500" />
+            <div class="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-coins text-[var(--status-warning)]" />
               金币
             </div>
-            <div class="text-2xl text-yellow-600 font-bold dark:text-yellow-500">
+            <div class="text-2xl text-[var(--status-warning)] font-bold font-mono">
               {{ status?.status?.gold || 0 }}
             </div>
             <div
               v-if="(status?.sessionGoldGained || 0) !== 0"
-              class="text-[10px]"
-              :class="(status?.sessionGoldGained || 0) > 0 ? 'text-green-500' : 'text-red-500'"
+              class="text-[10px] font-mono"
+              :class="(status?.sessionGoldGained || 0) > 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-error)]'"
             >
               {{ (status?.sessionGoldGained || 0) > 0 ? '+' : '' }}{{ status?.sessionGoldGained || 0 }}
             </div>
           </div>
           <div class="text-right">
-            <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500">
-              <div class="i-fas-ticket-alt text-emerald-400" />
+            <div class="flex items-center justify-end gap-1.5 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-ticket-alt text-[var(--status-success)]" />
               点券
             </div>
-            <div class="text-2xl text-emerald-500 font-bold dark:text-emerald-400">
+            <div class="text-2xl text-[var(--status-success)] font-bold font-mono">
               {{ status?.status?.coupon || 0 }}
             </div>
             <div
               v-if="(status?.sessionCouponGained || 0) !== 0"
-              class="text-[10px]"
-              :class="(status?.sessionCouponGained || 0) > 0 ? 'text-green-500' : 'text-red-500'"
+              class="text-[10px] font-mono"
+              :class="(status?.sessionCouponGained || 0) > 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-error)]'"
             >
               {{ (status?.sessionCouponGained || 0) > 0 ? '+' : '' }}{{ status?.sessionCouponGained || 0 }}
             </div>
           </div>
           <div class="text-right">
-            <div class="flex items-center justify-end gap-1.5 text-xs text-gray-500">
-              <div class="i-carbon-circle text-amber-500" />
+            <div class="flex items-center justify-end gap-1.5 text-xs text-[var(--text-muted)]">
+              <div class="i-carbon-circle text-[var(--status-warning)]" />
               金豆豆
             </div>
-            <div class="text-2xl text-amber-500 font-bold dark:text-amber-400">
+            <div class="text-2xl text-[var(--status-warning)] font-bold font-mono">
               {{ status?.status?.goldBean || 0 }}
             </div>
           </div>
         </div>
-        <div class="mt-4 border-t border-gray-100 pt-3 dark:border-gray-700">
+        <div class="mt-4 border-t border-[var(--border-subtle)] pt-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="h-2.5 w-2.5 rounded-full" :class="status?.connection?.connected ? 'bg-green-500' : 'bg-red-500'" />
-              <span class="text-xs font-bold">{{ status?.connection?.connected ? '在线' : '离线' }}</span>
+              <div class="h-2 w-2 rounded-full" :class="status?.connection?.connected ? 'bg-[var(--status-success)]' : 'bg-[var(--status-error)]'" />
+              <span class="text-xs text-[var(--text-secondary)] font-medium">{{ status?.connection?.connected ? '在线' : '离线' }}</span>
             </div>
-            <div class="flex items-center gap-1.5 text-xs text-gray-400">
-              <div class="i-fas-clock text-purple-400" />
-              {{ formatDuration(localUptime) }}
+            <div class="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-clock text-[var(--accent)]" />
+              <span class="font-mono">{{ formatDuration(localUptime) }}</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Items (Fertilizer & Collection) -->
-      <div class="flex flex-col justify-between rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-        <div class="mb-2 flex items-center gap-1.5 text-sm text-gray-500">
-          <div class="i-fas-flask text-emerald-400" />
+      <div class="flex flex-col justify-between border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
+        <div class="mb-3 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+          <div class="i-fas-flask text-[var(--status-success)]" />
           化肥容器
         </div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <div class="flex items-center gap-1 text-xs text-gray-400">
-              <div class="i-fas-flask text-emerald-400" />
+            <div class="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-flask text-[var(--status-success)]" />
               普通
             </div>
-            <div class="font-bold">
+            <div class="font-bold font-mono">
               {{ formatBucketTime(fertilizerNormal) }}
             </div>
           </div>
           <div>
-            <div class="flex items-center gap-1 text-xs text-gray-400">
-              <div class="i-fas-vial text-emerald-400" />
+            <div class="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-vial text-[var(--status-success)]" />
               有机
             </div>
-            <div class="font-bold">
+            <div class="font-bold font-mono">
               {{ formatBucketTime(fertilizerOrganic) }}
             </div>
           </div>
         </div>
-        <div class="my-2 border-t border-gray-100 dark:border-gray-700" />
-        <div class="mb-1 flex items-center gap-1.5 text-sm text-gray-500">
-          <div class="i-fas-star text-emerald-400" />
+        <div class="my-3 border-t border-[var(--border-subtle)]" />
+        <div class="mb-2 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+          <div class="i-fas-star text-[var(--status-success)]" />
           收藏点
         </div>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <div class="flex items-center gap-1 text-xs text-gray-400">
-              <div class="i-fas-bookmark text-emerald-400" />
+            <div class="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-bookmark text-[var(--status-success)]" />
               普通
             </div>
-            <div class="font-bold">
+            <div class="font-bold font-mono">
               {{ collectionNormal?.count || 0 }}
             </div>
           </div>
           <div>
-            <div class="flex items-center gap-1 text-xs text-gray-400">
-              <div class="i-fas-gem text-emerald-400" />
+            <div class="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+              <div class="i-fas-gem text-[var(--status-success)]" />
               典藏
             </div>
-            <div class="font-bold">
+            <div class="font-bold font-mono">
               {{ collectionRare?.count || 0 }}
             </div>
           </div>
@@ -612,14 +607,13 @@ useIntervalFn(updateCountdowns, 1000)
       </div>
     </div>
 
-    <!-- Main Content Flex -->
+    <!-- Main Content -->
     <div class="flex flex-1 flex-col items-stretch gap-6 md:flex-row">
       <!-- Logs (Left Column) -->
       <div class="flex flex-1 flex-col gap-6 md:w-3/4">
-        <!-- Logs -->
-        <div class="flex flex-1 flex-col rounded-lg bg-white p-6 shadow md:overflow-hidden dark:bg-gray-800">
+        <div class="flex flex-1 flex-col border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5 md:overflow-hidden">
           <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h3 class="flex items-center gap-2 text-lg font-medium">
+            <h3 class="flex items-center gap-2 text-lg font-semibold tracking-tight">
               <div class="i-carbon-document" />
               <span>运行日志</span>
             </h3>
@@ -674,14 +668,14 @@ useIntervalFn(updateCountdowns, 1000)
             </div>
           </div>
 
-          <div ref="logContainer" class="max-h-[50vh] min-h-0 flex-1 overflow-y-auto rounded bg-gray-50 p-4 text-sm leading-relaxed font-mono dark:bg-gray-900" @scroll="onLogScroll">
-            <div v-if="!allLogs.length" class="py-8 text-center text-gray-400">
+          <div ref="logContainer" class="max-h-[50vh] min-h-0 flex-1 overflow-y-auto border border-[var(--border-subtle)] rounded-lg bg-[var(--surface-app)] p-4 text-sm leading-relaxed font-mono" @scroll="onLogScroll">
+            <div v-if="!allLogs.length" class="py-8 text-center text-[var(--text-muted)]">
               暂无日志
             </div>
             <div v-for="log in allLogs" :key="log.ts + log.msg" class="mb-1 break-all">
-              <span class="mr-2 select-none text-gray-400">[{{ formatLogTime(log.time) }}]</span>
-              <span class="mr-2 rounded px-1.5 py-0.5 text-xs font-bold" :class="getLogTagClass(log.tag)">{{ log.tag }}</span>
-              <span v-if="log.meta?.event" class="mr-2 rounded bg-blue-50 px-1.5 py-0.5 text-xs text-blue-500 dark:bg-blue-900/20 dark:text-blue-400">{{ getEventLabel(log.meta.event) }}</span>
+              <span class="mr-2 select-none text-[var(--text-muted)]">[{{ formatLogTime(log.time) }}]</span>
+              <span class="mr-2 inline-flex rounded px-1.5 py-0.5 text-[10px] font-medium" :class="getLogTagClass(log.tag)">{{ log.tag }}</span>
+              <span v-if="log.meta?.event" class="mr-2 inline-flex rounded bg-[var(--accent)]/10 px-1.5 py-0.5 text-[10px] text-[var(--accent)]">{{ getEventLabel(log.meta.event) }}</span>
               <span :class="getLogMsgClass(log.tag)">{{ log.msg }}</span>
             </div>
           </div>
@@ -691,36 +685,36 @@ useIntervalFn(updateCountdowns, 1000)
       <!-- Right Column Stack -->
       <div class="flex flex-col gap-6 md:w-1/4">
         <!-- Next Checks -->
-        <div class="flex flex-col rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-          <h3 class="mb-4 flex items-center gap-2 text-lg font-medium">
+        <div class="flex flex-col border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
+          <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold tracking-tight">
             <div class="i-carbon-hourglass" />
             <span>下次巡查倒计时</span>
           </h3>
           <div class="flex flex-col justify-center gap-4">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <div class="i-carbon-sprout text-lg text-green-500" />
+              <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <div class="i-carbon-sprout text-lg text-[var(--status-success)]" />
                 <span>农场</span>
               </div>
-              <div class="text-lg font-bold font-mono">
+              <div class="text-lg text-[var(--text-primary)] font-bold font-mono">
                 {{ nextFarmCheck }}
               </div>
             </div>
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <div class="i-carbon-user-multiple text-lg text-blue-500" />
+              <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <div class="i-carbon-user-multiple text-lg text-[var(--status-info)]" />
                 <span>帮助</span>
               </div>
-              <div class="text-lg font-bold font-mono">
+              <div class="text-lg text-[var(--text-primary)] font-bold font-mono">
                 {{ nextHelpCheck }}
               </div>
             </div>
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                <div class="i-carbon-run text-lg text-orange-500" />
+              <div class="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                <div class="i-carbon-run text-lg text-[var(--status-warning)]" />
                 <span>偷菜</span>
               </div>
-              <div class="text-lg font-bold font-mono">
+              <div class="text-lg text-[var(--text-primary)] font-bold font-mono">
                 {{ nextStealCheck }}
               </div>
             </div>
@@ -728,18 +722,18 @@ useIntervalFn(updateCountdowns, 1000)
         </div>
 
         <!-- Operations Grid -->
-        <div class="flex-1 rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-          <h3 class="mb-3 flex items-center gap-2 text-lg font-medium">
+        <div class="flex-1 border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-5">
+          <h3 class="mb-3 flex items-center gap-2 text-lg font-semibold tracking-tight">
             <div class="i-carbon-chart-column" />
             <span>今日统计</span>
           </h3>
-          <div v-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 rounded-lg bg-white p-12 text-center text-gray-500 shadow dark:bg-gray-800">
-            <div class="i-carbon-connection-signal-off text-4xl text-gray-400" />
+          <div v-if="!status?.connection?.connected" class="flex flex-col items-center justify-center gap-4 border border-[var(--border-subtle)] rounded-xl bg-[var(--surface-card)] p-12 text-center text-[var(--text-muted)]">
+            <div class="i-carbon-connection-signal-off text-4xl text-[var(--text-muted)]" />
             <div class="flex flex-col">
-              <div class="text-lg text-gray-700 font-medium dark:text-gray-300">
+              <div class="text-lg text-[var(--text-primary)] font-medium">
                 账号未登录
               </div>
-              <div class="mt-1 text-sm text-gray-400">
+              <div class="mt-1 text-sm text-[var(--text-muted)]">
                 请先运行账号或检查网络连接
               </div>
             </div>
@@ -748,15 +742,15 @@ useIntervalFn(updateCountdowns, 1000)
             <div
               v-for="(val, key) in filteredOperations"
               :key="key"
-              class="flex items-center justify-between rounded bg-gray-50 px-3 py-2 dark:bg-gray-700/30"
+              class="flex items-center justify-between border border-[var(--border-subtle)] rounded-lg bg-[var(--surface-app)] px-3 py-2"
             >
               <div class="flex items-center gap-2">
                 <div class="text-base 2xl:text-lg" :class="[getOpIcon(key), getOpColor(key)]" />
-                <div class="text-xs text-gray-500 2xl:text-sm">
+                <div class="text-xs text-[var(--text-muted)] 2xl:text-sm">
                   {{ getOpName(key) }}
                 </div>
               </div>
-              <div class="text-sm font-bold 2xl:text-base">
+              <div class="text-sm text-[var(--text-primary)] font-bold font-mono 2xl:text-base">
                 {{ val }}
               </div>
             </div>

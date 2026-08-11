@@ -19,31 +19,33 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-opacity" @click="emit('cancel')">
-    <div class="max-w-sm w-full scale-100 transform rounded-xl bg-white p-6 shadow-2xl transition-all dark:bg-gray-800" @click.stop>
-      <h3 class="mb-3 text-xl text-gray-900 font-bold dark:text-gray-100">
-        {{ title || '确认操作' }}
-      </h3>
-      <p class="mb-8 whitespace-pre-line text-gray-600 leading-relaxed dark:text-gray-400">
-        {{ message || '确定要执行此操作吗？' }}
-      </p>
-      <div class="flex justify-end gap-3">
-        <BaseButton
-          v-if="!isAlert"
-          variant="secondary"
-          :disabled="loading"
-          @click="emit('cancel')"
-        >
-          {{ cancelText || '取消' }}
-        </BaseButton>
-        <BaseButton
-          :variant="type === 'danger' ? 'danger' : 'primary'"
-          :loading="loading"
-          @click="emit('confirm')"
-        >
-          {{ confirmText || '确定' }}
-        </BaseButton>
+  <Transition name="scale">
+    <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" @click="emit('cancel')">
+      <div class="max-w-sm w-full border border-[var(--border-default)] rounded-xl bg-[var(--surface-elevated)] p-5 shadow-xl" @click.stop>
+        <h3 class="mb-2 text-base font-semibold">
+          {{ title || '确认操作' }}
+        </h3>
+        <p class="mb-6 whitespace-pre-line text-sm text-[var(--text-secondary)]">
+          {{ message || '确定要执行此操作吗？' }}
+        </p>
+        <div class="flex justify-end gap-2">
+          <BaseButton
+            v-if="!isAlert"
+            variant="secondary"
+            :disabled="loading"
+            @click="emit('cancel')"
+          >
+            {{ cancelText || '取消' }}
+          </BaseButton>
+          <BaseButton
+            :variant="type === 'danger' ? 'danger' : 'primary'"
+            :loading="loading"
+            @click="emit('confirm')"
+          >
+            {{ confirmText || '确定' }}
+          </BaseButton>
+        </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
