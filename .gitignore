@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+node_modules/
+**/node_modules/
+.pnpm-store/
+web/dist/
+.idea/
+.vscode/
+*.log
+*.tsbuildinfo
+google-chrome-stable_current_amd64.deb
+core/data/*.json
+core/data/logs/*
+!core/data/.gitkeep
+!core/data/logs/.gitkeep
