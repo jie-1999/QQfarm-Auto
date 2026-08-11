@@ -422,7 +422,7 @@ async function copyToken() {
       <div class="flex items-center gap-3">
         <div class="i-carbon-sprout text-2xl" :style="{ color: 'var(--theme-primary)' }" />
         <span class="bg-clip-text text-lg text-transparent font-bold" :style="{ backgroundImage: 'var(--theme-gradient)' }">
-          AdolphJau的农场助手
+          农场助手
         </span>
       </div>
       <!-- Mobile Close Button -->

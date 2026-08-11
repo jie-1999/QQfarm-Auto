@@ -316,7 +316,7 @@ async function fetchGameVersion() {
           <span class="text-5xl">🌾</span>
         </div>
         <h1 class="logo-title">
-          AdolphJau的农场助手
+          农场助手
         </h1>
         <p class="logo-subtitle">
           {{ isLogin ? '欢迎回来，开始你的农场之旅' : '加入我们，开启农场新生活' }}
